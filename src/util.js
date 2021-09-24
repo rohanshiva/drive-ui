@@ -27,3 +27,17 @@ export const downloadBlob = (blob, name) => {
         link.remove();
       }, 100);
   }
+  export const checkFolder = (path) => {
+    return path.endsWith("/")
+}
+
+export const removePrefix = (key, prefix) => {
+
+  prefix = prefix === "" ? null : prefix
+  if (key.startsWith(prefix)) {
+
+    return key.split(prefix)[1]
+  } else {
+    return key
+  }
+}

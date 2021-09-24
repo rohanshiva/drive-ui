@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { list, filterFolders } from "./api";
-export default function useList(props, lastFile, deleted = null, prefixes) {
+import { list } from "./api";
+export default function useList(lastFile, deleted = null, prefixes) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [files, setFiles] = useState([]);
@@ -16,28 +16,27 @@ export default function useList(props, lastFile, deleted = null, prefixes) {
   useEffect(() => {
     setLoading(true);
     setError(false);
-    const prefix = (prefixes && prefixes.length > 0) ? prefixes.join("") : null
-    list(props, lastFile, prefix).then((res) => {
-      const filteredList = filterFolders(res.names, files[files.length - 1], prefix);
-      setFiles((prevfiles) => [...prevfiles, ...filteredList]);
+    const prefix = prefixes.join("");
+    list(lastFile, prefix).then((res) => {
+      console.log("...", lastFile)
+      setFiles([...files, ...res.names]);
       setLast(res.last);
       setLoading(false);
     });
-  }, [props, lastFile]);
+  }, [lastFile]);
 
   useEffect(() => {
-    console.log(prefixes);
     if (prefixes) {
-      const prefix = (prefixes && prefixes.length > 0) ? prefixes.join("") : null
-      console.log(prefix);
+      setFiles([]);
+
+      const prefix = prefixes.join("");
       setLoading(true);
       setError(false);
-      list(props, "", prefix).then((res) => {
-        console.log(res.names)
-        const filteredList = filterFolders(res.names, null, prefix);
-        console.log(res.last)
-        setFiles(filteredList);
+      list("", prefix).then((res) => {
+
+        setFiles(res.names);
         setLast(res.last);
+
         setLoading(false);
       });
     }
