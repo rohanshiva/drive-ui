@@ -1,43 +1,46 @@
 import { useEffect, useState } from "react";
+
 import { list } from "./api";
-export default function useList(lastFile, deleted = null, prefixes) {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+import useToggle from "./useToggle";
+
+export default function useList(lastFile, prefixes) {
+  const [loading, toggleLoading] = useToggle();
+  const [error, setError] = useState("");
   const [files, setFiles] = useState([]);
   const [last, setLast] = useState("");
 
   useEffect(() => {
-    setLoading(true);
-    setError(false);
-    setFiles((prevfiles) => prevfiles.filter((file) => file !== deleted));
-    setLoading(false);
-  }, [deleted]);
-
-  useEffect(() => {
-    setLoading(true);
-    setError(false);
+    toggleLoading();
+    setError("");
     const prefix = prefixes.join("");
-    list(lastFile, prefix).then((res) => {
-      setFiles([...files, ...res.names]);
-      setLast(res.last);
-      setLoading(false);
-    });
-  }, [lastFile]);
+    list(lastFile, prefix)
+      .then((res) => {
+        setFiles([...files, ...res.names]);
+        setLast(res.last);
+        toggleLoading();
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  }, [lastFile]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (prefixes) {
+    if (prefixes.length) {
       setFiles([]);
-
+      toggleLoading();
+      setError("");
       const prefix = prefixes.join("");
-      setLoading(true);
-      setError(false);
-      list("", prefix).then((res) => {
-        setFiles(res.names);
-        setLast(res.last);
-
-        setLoading(false);
-      });
+      list("", prefix)
+        .then((res) => {
+          setFiles(res.names);
+          setLast(res.last);
+          toggleLoading();
+        })
+        .catch((err) => {
+          setError(err);
+        });
     }
-  }, [prefixes]);
+  }, [prefixes]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return { loading, error, files, last };
 }
