@@ -15,10 +15,8 @@ import "./Table.css";
 export default function Table() {
   const [lastFile, setLastFile] = useState("");
   const [deleted, setDeleted] = useState("");
-  const [showPreview, setShowPreview] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [prefixes, setPrefixes] = useState([]);
-  const [selected, setSelected] = useState("");
 
   const {
     files = [],
@@ -79,9 +77,7 @@ export default function Table() {
         blob = blob.slice(0, blob.size, "image/svg+xml");
       }
       const blobUrl = window.URL.createObjectURL(blob);
-      setPreviewUrl(blobUrl);
-      setSelected(key);
-      setShowPreview(true);
+      setPreview({ key, url: blobUrl });
     } catch (error) {
       console.error(error);
     }
@@ -98,24 +94,23 @@ export default function Table() {
       >
         {prefixes.length > 0 ? prefixes.join("") : "/"}
       </div>
-      {showPreview && previewUrl && (
+      {preview && (
         <div className="preview-container">
           <div className="preview-nav">
             <ChevronLeft
               className="back-icon"
               onClick={() => {
-                setShowPreview(false);
-                setPreviewUrl(null);
+                setPreview(null);
               }}
             />
-            <div>{selected}</div>
+            <div>{preview.key}</div>
           </div>
           <div className="img-container">
-            <img src={previewUrl} alt={previewUrl} />
+            <img src={preview.url} alt={preview.key} />
           </div>
         </div>
       )}
-      {!showPreview && (
+      {!preview && (
         <div className="table">
           <div className="table-header">
             {prefixes.length > 0 ? prefixes.join("") : "/"}
