@@ -24,7 +24,7 @@
   min-height: 40px;
   max-height: 40px;
   display: flex;
-  padding: 0.5rem;
+  padding: 0.25rem 1rem;
   align-items: center;
   background-color: #eae5e5;
   border-bottom: 1px solid #777984;
@@ -32,10 +32,7 @@
   border-top-right-radius: 5px;
 }
 .table-row {
-  padding-left: 1rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  padding-right: 1rem;
+  padding: 0.25rem 1rem;
   display: grid;
   align-items: center;
   grid-template-columns: fit-content(2rem) 2fr 1fr;
