@@ -17,6 +17,7 @@ export default function Table() {
   const [deleted, setDeleted] = useState("");
   const [preview, setPreview] = useState(null);
   const [prefixes, setPrefixes] = useState([]);
+  const [toastMsg, setToastMsg] = useState(null);
 
   const {
     files = [],
@@ -82,8 +83,30 @@ export default function Table() {
       console.error(error);
     }
   }
+
+  function handleDrop(event) {
+    event.preventDefault();
+    let uploadFile = event.dataTransfer.files[0];
+    console.log(uploadFile);
+    setToastMsg(`Uploading file ${uploadFile.name}`)
+  }
+  function handleDragEnter(event) {
+    setToastMsg(`Drop the file to upload.`)
+    event.preventDefault();
+  }
+
+  function handleDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  }
+
   return (
-    <>
+    <div
+      onDrop={(event) => handleDrop(event)}
+      onDragEnter={(event) => handleDragEnter(event)}
+      onDragOver={(event) => handleDragOver(event)}
+
+    >
       <div
         className="prefixes"
         onClick={() =>
@@ -175,6 +198,13 @@ export default function Table() {
           <div>{error && "Error"}</div>
         </div>
       )}
-    </>
+      {toastMsg && (
+        <div className="toast-container">
+          <div className="upload-toast">
+            <div className="toast-msg">{toastMsg}</div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
