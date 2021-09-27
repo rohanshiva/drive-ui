@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import useList from "./useList";
 import { deleteDrawing, get } from "./api.js";
-import { downloadBlob, checkFolder, removePrefix } from "./util.js";
+import { downloadBlob } from "./util.js";
 
 import {
   Trash2,
@@ -12,33 +12,18 @@ import {
 } from "react-feather";
 import "./Table.css";
 
-export default function Table(props) {
+export default function Table() {
   const [lastFile, setLastFile] = useState("");
   const [deleted, setDeleted] = useState("");
-  const [showPreview, setShowPreview] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [prefixes, setPrefixes] = useState([]);
-  const [selected, setSelected] = useState(""); 
 
-  const imageTypes = [
-    ".apng",
-    ".avif",
-    ".gif",
-    ".jpg",
-    ".jpeg",
-    ".jfif",
-    ".pjpeg",
-    ".pjp",
-    ".png",
-    ".svg",
-    ".webp",
-  ];
-
-  const { files, last, loading, error } = useList(
-    lastFile,
-    deleted,
-    prefixes
-  );
+  const {
+    files = [],
+    last,
+    loading,
+    error,
+  } = useList(lastFile, deleted, prefixes);
 
   const observer = useRef();
 
@@ -48,7 +33,6 @@ export default function Table(props) {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && last) {
-
           setLastFile(last);
         }
       });
@@ -56,15 +40,6 @@ export default function Table(props) {
     },
     [loading, last]
   );
-
-  function isImage(key) {
-    for (const type of imageTypes) {
-      if (key.endsWith(type)) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   async function handleDelete(key) {
     try {
@@ -78,38 +53,33 @@ export default function Table(props) {
         setDeleted(key);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
-  function handleFolder(key) {
-    key = removePrefix(key, prefixes.join(""));
-    setPrefixes([...prefixes, key]);
+  function handleFolder(file) {
+    setPrefixes([...prefixes, file.name]);
   }
 
-  async function handleDownload(key) {
+  async function handleDownload(file) {
     try {
-      const blob = await get(key);
-      // const blobUrl = window.URL.createObjectURL(blob);
-      // await fetch(blobUrl).then(async (r)=> {console.log(await r.blob()) })
-      downloadBlob(blob, key);
+      const blob = await get(file.rawName);
+      downloadBlob(blob, file.name);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
-  async function handlePreview(key) {
+  async function handlePreview(file) {
     try {
-      let blob = await get(key);
-      if (key.endsWith(".svg")) {
+      let blob = await get(file.rawName);
+      if (file.rawName.endsWith(".svg")) {
         blob = blob.slice(0, blob.size, "image/svg+xml");
       }
       const blobUrl = window.URL.createObjectURL(blob);
-      setPreviewUrl(blobUrl);
-      setSelected(key);
-      setShowPreview(true);
+      setPreview({ name: file.rawName, url: blobUrl });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
   return (
@@ -122,71 +92,66 @@ export default function Table(props) {
           )
         }
       >
-        {prefixes.length > 0 ? prefixes.map((p) => <div>{p}</div>) : "/"}
+        {prefixes.length > 0 ? prefixes.join("") : "/"}
       </div>
-      {showPreview && previewUrl && (
+      {preview && (
         <div className="preview-container">
           <div className="preview-nav">
-            <div
+            <ChevronLeft
               className="back-icon"
               onClick={() => {
-                setShowPreview(false);
-                setPreviewUrl(null);
+                setPreview(null);
               }}
-            >
-              <ChevronLeft /> 
-            </div>
-            <div>
-              {selected}
-              </div>
+            />
+            <div>{preview.name}</div>
           </div>
           <div className="img-container">
-            <img src={previewUrl} alt={previewUrl} />
+            <img src={preview.url} alt={preview.name} />
           </div>
         </div>
       )}
-      {!showPreview && (
+      {!preview && (
         <div className="table">
           <div className="table-header">
-            {prefixes.length > 0 ? prefixes.map((p) => <div>{p}</div>) : "/"}
+            {prefixes.length > 0 ? prefixes.join("") : "/"}
           </div>
           <div></div>
           <div className="rows">
-            {files.map((d, index) => {
+            {files.map((file, index) => {
               return (
                 <div
                   className="table-row"
                   ref={files.length === index + 1 ? lastElementRef : null}
-                  key={`${d}${index}`}
+                  key={`${file}${index}`}
                 >
                   <div className="td">
                     <div className="file-icon">
-                      {checkFolder(d) ? <Folder /> : <File />}
+                      {file.isFolder ? <Folder /> : <File />}
                     </div>
                   </div>
                   <div className="td">
-                    {checkFolder(d) || isImage(d) ? (
+                    {file.isFolder || file.isImage ? (
                       <div
                         className="file-name"
                         onClick={() =>
-                          checkFolder(d) ? handleFolder(d) : handlePreview(d)
+                          file.isFolder
+                            ? handleFolder(file)
+                            : handlePreview(file)
                         }
                       >
-                        {removePrefix(d, prefixes.join(""))}
+                        {file.name}
                       </div>
                     ) : (
-                      <div className="file-name-disabled">
-                        {removePrefix(d, prefixes.join(""))}
-                      </div>
+                      <div className="file-name-disabled">{file.name}</div>
                     )}
                   </div>
 
-                  {!checkFolder(d) && (
+                  {!file.isFolder && (
                     <div className="td">
                       <div className="actions">
                         <button
                           className="action-btn"
-                          onClick={async () => await handleDownload(d)}
+                          onClick={async () => await handleDownload(file)}
                         >
                           <div className="action-icon">
                             <DownloadCloud />

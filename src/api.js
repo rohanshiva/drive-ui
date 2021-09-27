@@ -1,17 +1,29 @@
 import { drive } from "./config.js";
+import { checkFolder, removePrefix, checkImage } from "./util.js";
 
 export const list = async (last = "", prefix = "") => {
-  let options = { limit: 22, last, prefix, recursive: false };
-  
-  const result = await drive.list(options);
-  const names = await result.names;
-  const paging = await result.paging;
+  const { paging, names } = await drive.list({
+    limit: 22,
+    last,
+    prefix,
+    recursive: false,
+  });
 
-  if (!paging) {
-    return { names, last: "" };
-  }
+  return { names: parseNames(names, prefix), last: paging?.last || "" };
+};
 
-  return { names, last: paging.last };
+const parseNames = (names = [], prefix = "") => {
+  return names.map((name) => {
+    const isFolder = checkFolder(name);
+    const isImage = !isFolder && checkImage(name);
+    return {
+      rawName: name,
+      isFolder,
+      isImage,
+      name: removePrefix(name, prefix),
+      prefix,
+    };
+  });
 };
 
 export const deleteDrawing = async (key) => {
