@@ -1,5 +1,10 @@
 import { drive } from "./config.js";
-import { checkFolder, removePrefix, checkImage } from "./util.js";
+import {
+  checkImage,
+  checkFolder,
+  removePrefix,
+  removeTrailingSlash,
+} from "./util.js";
 
 export const list = async (last = "", prefix = "") => {
   const { paging, names } = await drive.list({
@@ -16,11 +21,13 @@ const parseNames = (names = [], prefix = "") => {
   return names.map((name) => {
     const isFolder = checkFolder(name);
     const isImage = !isFolder && checkImage(name);
+    const prefixRemoved = removePrefix(name, prefix);
     return {
       rawName: name,
       isFolder,
       isImage,
-      name: removePrefix(name, prefix),
+      name: prefixRemoved,
+      displayName: removeTrailingSlash(prefixRemoved),
       prefix,
     };
   });

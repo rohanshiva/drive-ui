@@ -1,29 +1,18 @@
 import React, { useState, useRef, useCallback } from "react";
+import { DownloadCloud, ChevronLeft, Folder, File } from "react-feather";
+
+import { get } from "./api.js";
 import useList from "./useList";
-import { deleteDrawing, get } from "./api.js";
 import { downloadBlob } from "./util.js";
 
-import {
-  Trash2,
-  DownloadCloud,
-  ChevronLeft,
-  Folder,
-  File,
-} from "react-feather";
 import "./Table.css";
 
 export default function Table() {
   const [lastFile, setLastFile] = useState("");
-  const [deleted, setDeleted] = useState("");
   const [preview, setPreview] = useState(null);
   const [prefixes, setPrefixes] = useState([]);
 
-  const {
-    files = [],
-    last,
-    loading,
-    error,
-  } = useList(lastFile, deleted, prefixes);
+  const { files, last, loading, error } = useList(lastFile, prefixes);
 
   const observer = useRef();
 
@@ -40,22 +29,6 @@ export default function Table() {
     },
     [loading, last]
   );
-
-  async function handleDelete(key) {
-    try {
-      key = `${prefixes.join("")}${key}`;
-      const res = await deleteDrawing(key);
-      if (files.length === 1) {
-        setPrefixes(
-          prefixes.filter((_, index) => index !== prefixes.length - 1)
-        );
-      } else {
-        setDeleted(key);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   function handleFolder(file) {
     setPrefixes([...prefixes, file.name]);
@@ -84,15 +57,19 @@ export default function Table() {
   }
   return (
     <>
-      <div
-        className="prefixes"
-        onClick={() =>
-          setPrefixes(
-            prefixes.filter((_, index) => index !== prefixes.length - 1)
-          )
-        }
-      >
-        {prefixes.length > 0 ? prefixes.join("") : "/"}
+      <div className="prefixes">
+        {prefixes.length > 0 ? (
+          prefixes.map((prefix, index) => (
+            <span
+              key={`${prefix}${index}`}
+              onClick={() => setPrefixes(prefixes.slice(0, index + 1))}
+            >
+              {prefix}
+            </span>
+          ))
+        ) : (
+          <span>/</span>
+        )}
       </div>
       {preview && (
         <div className="preview-container">
@@ -122,7 +99,7 @@ export default function Table() {
                 <div
                   className="table-row"
                   ref={files.length === index + 1 ? lastElementRef : null}
-                  key={`${file}${index}`}
+                  key={`${file.rawName}${index}`}
                 >
                   <div className="td">
                     <div className="file-icon">
@@ -139,7 +116,7 @@ export default function Table() {
                             : handlePreview(file)
                         }
                       >
-                        {file.name}
+                        {file.displayName}
                       </div>
                     ) : (
                       <div className="file-name-disabled">{file.name}</div>
@@ -172,7 +149,7 @@ export default function Table() {
               </div>
             )}
           </div>
-          <div>{error && "Error"}</div>
+          <div>{error}</div>
         </div>
       )}
     </>
