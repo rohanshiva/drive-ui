@@ -13,8 +13,17 @@
   margin-top: 2rem;
   font-weight: 700;
   font-size: 20px;
-  color: #2e2e32;
   margin-bottom: 2rem;
+  cursor: pointer;
+}
+.prefixes span {
+  color: #82838d;
+}
+.prefixes span:last-child {
+  color: #2e2e32;
+}
+.prefixes span:hover {
+  color: #2e2e32;
 }
 .rows {
   overflow-y: scroll;

@@ -34,6 +34,10 @@ export const removePrefix = (key, prefix) => {
   return key.replace(prefix, "");
 };
 
+export const removeTrailingSlash = (key) => {
+  return key.replace(/\/$/, "");
+};
+
 export function checkImage(key) {
   for (const type of [
     ".apng",
