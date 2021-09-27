@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import { DownloadCloud, ChevronLeft, Folder, File } from "react-feather";
 
-import { get } from "./api.js";
+import { get, put } from "./api.js";
 import useList from "./useList";
 import { downloadBlob } from "./util.js";
 
@@ -57,24 +57,53 @@ export default function Table() {
     }
   }
 
-  function handleDrop(event) {
+  async function handleDrop(event) {
     event.preventDefault();
-    let uploadFile = event.dataTransfer.files[0];
-    console.log(uploadFile);
-    setToastMsg(`Uploading file ${uploadFile.name}`)
+    event.stopPropagation();
+    setToastMsg(null);
+    const file = event.dataTransfer.files[0];
+    const blobUrl = window.URL.createObjectURL(file);
+    let buffer = await file.arrayBuffer();
+    buffer = new Uint8Array(buffer);
+    const contentType = file.type;
+    const key = file.name;
+
+    try {
+      const res = await put(`${prefixes.join("")}${key}`, buffer, contentType);
+      setToastMsg(`Uploaded ${key} successfully.`);
+      setTimeout(() => {
+        setToastMsg(null);
+      }, 3000);
+    } catch (error) {
+      setToastMsg(`Failed to upload ${key} please try again.`);
+      setTimeout(() => {
+        setToastMsg(null);
+      }, 3000);
+    }
   }
+
   function handleDragEnter(event) {
-    setToastMsg(`Drop the file to upload.`)
     event.preventDefault();
+    event.stopPropagation();
   }
 
   function handleDragOver(event) {
     event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
+    event.stopPropagation();
+    setToastMsg(`Drop to upload the file.`);
   }
-
+  function handleDragLeave(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    setToastMsg(null);
+  }
   return (
-    <div>
+    <div
+      onDragEnter={(event) => handleDragEnter(event)}
+      onDragLeave={(event) => handleDragLeave(event)}
+      onDragOver={(event) => handleDragOver(event)}
+      onDrop={async (event) => await handleDrop(event)}
+    >
       <div className="prefixes">
         {prefixes.length > 0 ? (
           prefixes.map((prefix, index) => (

@@ -42,3 +42,8 @@ export const get = async (key) => {
   const buf = await drive.get(key);
   return buf;
 };
+
+export const put = async (key, blob, contentType) => {
+  const buf = await drive.put(key, { data: blob, contentType });
+  return buf;
+};
