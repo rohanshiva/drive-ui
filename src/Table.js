@@ -57,15 +57,19 @@ export default function Table() {
   }
   return (
     <>
-      <div
-        className="prefixes"
-        onClick={() =>
-          setPrefixes(
-            prefixes.filter((_, index) => index !== prefixes.length - 1)
-          )
-        }
-      >
-        {prefixes.length > 0 ? prefixes.join("") : "/"}
+      <div className="prefixes">
+        {prefixes.length > 0 ? (
+          prefixes.map((prefix, index) => (
+            <span
+              key={`${prefix}${index}`}
+              onClick={() => setPrefixes(prefixes.slice(0, index + 1))}
+            >
+              {prefix}
+            </span>
+          ))
+        ) : (
+          <span>/</span>
+        )}
       </div>
       {preview && (
         <div className="preview-container">
