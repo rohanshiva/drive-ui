@@ -31,10 +31,26 @@ export const checkFolder = (path) => {
 };
 
 export const removePrefix = (key, prefix) => {
-  prefix = prefix === "" ? null : prefix;
-  if (key.startsWith(prefix)) {
-    return key.split(prefix)[1];
-  } else {
-    return key;
-  }
+  return key.replace(prefix, "");
 };
+
+export function checkImage(key) {
+  for (const type of [
+    ".apng",
+    ".avif",
+    ".gif",
+    ".jpg",
+    ".jpeg",
+    ".jfif",
+    ".pjpeg",
+    ".pjp",
+    ".png",
+    ".svg",
+    ".webp",
+  ]) {
+    if (key.endsWith(type)) {
+      return true;
+    }
+  }
+  return false;
+}

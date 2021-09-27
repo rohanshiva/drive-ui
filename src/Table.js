@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import useList from "./useList";
 import { deleteDrawing, get } from "./api.js";
-import { downloadBlob, checkFolder, removePrefix } from "./util.js";
+import { downloadBlob } from "./util.js";
 
 import {
   Trash2,
@@ -20,21 +20,12 @@ export default function Table() {
   const [prefixes, setPrefixes] = useState([]);
   const [selected, setSelected] = useState("");
 
-  const imageTypes = [
-    ".apng",
-    ".avif",
-    ".gif",
-    ".jpg",
-    ".jpeg",
-    ".jfif",
-    ".pjpeg",
-    ".pjp",
-    ".png",
-    ".svg",
-    ".webp",
-  ];
-
-  const { files, last, loading, error } = useList(lastFile, deleted, prefixes);
+  const {
+    files = [],
+    last,
+    loading,
+    error,
+  } = useList(lastFile, deleted, prefixes);
 
   const observer = useRef();
 
@@ -51,15 +42,6 @@ export default function Table() {
     },
     [loading, last]
   );
-
-  function isImage(key) {
-    for (const type of imageTypes) {
-      if (key.endsWith(type)) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   async function handleDelete(key) {
     try {
@@ -78,7 +60,6 @@ export default function Table() {
   }
 
   function handleFolder(key) {
-    key = removePrefix(key, prefixes.join(""));
     setPrefixes([...prefixes, key]);
   }
 
@@ -150,27 +131,27 @@ export default function Table() {
                 >
                   <div className="td">
                     <div className="file-icon">
-                      {checkFolder(d) ? <Folder /> : <File />}
+                      {d.isFolder ? <Folder /> : <File />}
                     </div>
                   </div>
                   <div className="td">
-                    {checkFolder(d) || isImage(d) ? (
+                    {d.isFolder || d.isImage ? (
                       <div
                         className="file-name"
                         onClick={() =>
-                          checkFolder(d) ? handleFolder(d) : handlePreview(d)
+                          d.isFolder
+                            ? handleFolder(d.name)
+                            : handlePreview(d.rawName)
                         }
                       >
-                        {removePrefix(d, prefixes.join(""))}
+                        {d.name}
                       </div>
                     ) : (
-                      <div className="file-name-disabled">
-                        {removePrefix(d, prefixes.join(""))}
-                      </div>
+                      <div className="file-name-disabled">{d.name}</div>
                     )}
                   </div>
 
-                  {!checkFolder(d) && (
+                  {!d.isFolder && (
                     <div className="td">
                       <div className="actions">
                         <button
