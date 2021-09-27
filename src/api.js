@@ -1,11 +1,12 @@
 import { drive } from "./config.js";
 
 export const list = async (last = "", prefix = "") => {
-  let options = { limit: 22, last, prefix, recursive: false };
-  
-  const result = await drive.list(options);
-  const names = await result.names;
-  const paging = await result.paging;
+  const { paging, names } = await drive.list({
+    limit: 22,
+    last,
+    prefix,
+    recursive: false,
+  });
 
   if (!paging) {
     return { names, last: "" };
