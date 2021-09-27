@@ -62,7 +62,6 @@ export default function Table() {
     event.stopPropagation();
     setToastMsg(null);
     const file = event.dataTransfer.files[0];
-    const blobUrl = window.URL.createObjectURL(file);
     let buffer = await file.arrayBuffer();
     buffer = new Uint8Array(buffer);
     const contentType = file.type;
