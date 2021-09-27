@@ -18,7 +18,6 @@ export default function useList(lastFile, deleted = null, prefixes) {
     setError(false);
     const prefix = prefixes.join("");
     list(lastFile, prefix).then((res) => {
-      console.log("...", lastFile)
       setFiles([...files, ...res.names]);
       setLast(res.last);
       setLoading(false);
@@ -33,7 +32,6 @@ export default function useList(lastFile, deleted = null, prefixes) {
       setLoading(true);
       setError(false);
       list("", prefix).then((res) => {
-
         setFiles(res.names);
         setLast(res.last);
 

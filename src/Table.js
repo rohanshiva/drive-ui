@@ -73,7 +73,7 @@ export default function Table() {
         setDeleted(key);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -85,11 +85,9 @@ export default function Table() {
   async function handleDownload(key) {
     try {
       const blob = await get(key);
-      // const blobUrl = window.URL.createObjectURL(blob);
-      // await fetch(blobUrl).then(async (r)=> {console.log(await r.blob()) })
       downloadBlob(blob, key);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -104,7 +102,7 @@ export default function Table() {
       setSelected(key);
       setShowPreview(true);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
   return (
@@ -117,7 +115,7 @@ export default function Table() {
           )
         }
       >
-        {prefixes.length > 0 ? prefixes.map((p) => <div>{p}</div>) : "/"}
+        {prefixes.length > 0 ? prefixes.join("") : "/"}
       </div>
       {showPreview && previewUrl && (
         <div className="preview-container">
@@ -139,7 +137,7 @@ export default function Table() {
       {!showPreview && (
         <div className="table">
           <div className="table-header">
-            {prefixes.length > 0 ? prefixes.map((p) => <div>{p}</div>) : "/"}
+            {prefixes.length > 0 ? prefixes.join("") : "/"}
           </div>
           <div></div>
           <div className="rows">
