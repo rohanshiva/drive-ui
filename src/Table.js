@@ -57,27 +57,27 @@ export default function Table() {
     }
   }
 
-  function handleFolder(key) {
-    setPrefixes([...prefixes, key]);
+  function handleFolder(file) {
+    setPrefixes([...prefixes, file.name]);
   }
 
-  async function handleDownload(key) {
+  async function handleDownload(file) {
     try {
-      const blob = await get(key);
-      downloadBlob(blob, key);
+      const blob = await get(file.rawName);
+      downloadBlob(blob, file.name);
     } catch (error) {
       console.error(error);
     }
   }
 
-  async function handlePreview(key) {
+  async function handlePreview(file) {
     try {
-      let blob = await get(key);
-      if (key.endsWith(".svg")) {
+      let blob = await get(file.rawName);
+      if (file.rawName.endsWith(".svg")) {
         blob = blob.slice(0, blob.size, "image/svg+xml");
       }
       const blobUrl = window.URL.createObjectURL(blob);
-      setPreview({ key, url: blobUrl });
+      setPreview({ name: file.rawName, url: blobUrl });
     } catch (error) {
       console.error(error);
     }
@@ -103,10 +103,10 @@ export default function Table() {
                 setPreview(null);
               }}
             />
-            <div>{preview.key}</div>
+            <div>{preview.name}</div>
           </div>
           <div className="img-container">
-            <img src={preview.url} alt={preview.key} />
+            <img src={preview.url} alt={preview.name} />
           </div>
         </div>
       )}
@@ -117,41 +117,41 @@ export default function Table() {
           </div>
           <div></div>
           <div className="rows">
-            {files.map((d, index) => {
+            {files.map((file, index) => {
               return (
                 <div
                   className="table-row"
                   ref={files.length === index + 1 ? lastElementRef : null}
-                  key={`${d}${index}`}
+                  key={`${file}${index}`}
                 >
                   <div className="td">
                     <div className="file-icon">
-                      {d.isFolder ? <Folder /> : <File />}
+                      {file.isFolder ? <Folder /> : <File />}
                     </div>
                   </div>
                   <div className="td">
-                    {d.isFolder || d.isImage ? (
+                    {file.isFolder || file.isImage ? (
                       <div
                         className="file-name"
                         onClick={() =>
-                          d.isFolder
-                            ? handleFolder(d.name)
-                            : handlePreview(d.rawName)
+                          file.isFolder
+                            ? handleFolder(file)
+                            : handlePreview(file)
                         }
                       >
-                        {d.name}
+                        {file.name}
                       </div>
                     ) : (
-                      <div className="file-name-disabled">{d.name}</div>
+                      <div className="file-name-disabled">{file.name}</div>
                     )}
                   </div>
 
-                  {!d.isFolder && (
+                  {!file.isFolder && (
                     <div className="td">
                       <div className="actions">
                         <button
                           className="action-btn"
-                          onClick={async () => await handleDownload(d)}
+                          onClick={async () => await handleDownload(file)}
                         >
                           <div className="action-icon">
                             <DownloadCloud />
