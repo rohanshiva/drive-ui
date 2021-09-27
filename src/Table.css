@@ -7,6 +7,7 @@
   background-color: #f5f4f7;
   border: 1px solid #777984;
   border-radius: 5px;
+  overflow: hidden;
 }
 .prefixes {
   margin-top: 3rem;
@@ -28,8 +29,6 @@
   align-items: center;
   background-color: #eae5e5;
   border-bottom: 1px solid #777984;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
 }
 .table-row {
   padding: 0.25rem 1rem;
@@ -72,6 +71,7 @@
 }
 .back-icon {
   color: #a8aaad;
+  margin-right: 10px;
 }
 .back-icon:hover {
   color: #5d5d61;
@@ -115,19 +115,16 @@
   background-color: #f5f4f7;
   border: 1px solid #777984;
   border-radius: 5px;
-  overflow-y: scroll;
-  background-color: rgba(255, 254, 254, 1);
-  z-index: 999;
   cursor: pointer;
+  overflow: hidden;
 }
 .preview-nav {
-  width: 998px;
-  height: 45px;
+  height: 40px;
   color: #2e2e32;
   font-weight: 700;
   min-height: 40px;
   display: flex;
-  padding: 0.5rem;
+  padding: 0.25rem 1rem;
   align-items: center;
   background-color: #eae5e5;
   border-bottom: 1px solid #777984;
@@ -135,9 +132,13 @@
 .img-container {
   display: grid;
   place-items: center;
+  height: 100%;
+  width: 100%;
 }
 img {
   object-fit: contain;
+  height: 100%;
+  width: 100%;
 }
 @import url("https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700;800&display=swap");
 

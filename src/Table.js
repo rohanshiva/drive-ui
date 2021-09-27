@@ -12,13 +12,13 @@ import {
 } from "react-feather";
 import "./Table.css";
 
-export default function Table(props) {
+export default function Table() {
   const [lastFile, setLastFile] = useState("");
   const [deleted, setDeleted] = useState("");
   const [showPreview, setShowPreview] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [prefixes, setPrefixes] = useState([]);
-  const [selected, setSelected] = useState(""); 
+  const [selected, setSelected] = useState("");
 
   const imageTypes = [
     ".apng",
@@ -34,11 +34,7 @@ export default function Table(props) {
     ".webp",
   ];
 
-  const { files, last, loading, error } = useList(
-    lastFile,
-    deleted,
-    prefixes
-  );
+  const { files, last, loading, error } = useList(lastFile, deleted, prefixes);
 
   const observer = useRef();
 
@@ -48,7 +44,6 @@ export default function Table(props) {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && last) {
-
           setLastFile(last);
         }
       });
@@ -127,18 +122,14 @@ export default function Table(props) {
       {showPreview && previewUrl && (
         <div className="preview-container">
           <div className="preview-nav">
-            <div
+            <ChevronLeft
               className="back-icon"
               onClick={() => {
                 setShowPreview(false);
                 setPreviewUrl(null);
               }}
-            >
-              <ChevronLeft /> 
-            </div>
-            <div>
-              {selected}
-              </div>
+            />
+            <div>{selected}</div>
           </div>
           <div className="img-container">
             <img src={previewUrl} alt={previewUrl} />
