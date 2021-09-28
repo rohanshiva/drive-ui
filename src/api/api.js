@@ -1,10 +1,10 @@
-import { drive } from "./config.js";
+import { drive } from "../config";
 import {
   checkImage,
   checkFolder,
   removePrefix,
   removeTrailingSlash,
-} from "./util.js";
+} from "../utils/util";
 
 export const list = async (last = "", prefixes = []) => {
   const prefix = prefixes.join("/").concat("/");

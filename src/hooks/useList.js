@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { list } from "./api";
+import { list } from "../api/api";
 import useToggle from "./useToggle";
 
 export default function useList() {
