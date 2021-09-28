@@ -56,7 +56,7 @@ export default function Table() {
         blob = blob.slice(0, blob.size, "image/svg+xml");
       }
       const blobUrl = window.URL.createObjectURL(blob);
-      setPreview({ name: file.rawName, url: blobUrl });
+      setPreview({ name: file.name, url: blobUrl });
     } catch (error) {
       console.error(error);
     }
