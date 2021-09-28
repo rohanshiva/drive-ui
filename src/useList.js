@@ -12,8 +12,7 @@ export default function useList(lastFile, prefixes) {
   useEffect(() => {
     toggleLoading();
     setError("");
-    const prefix = prefixes.join("");
-    list(lastFile, prefix)
+    list(lastFile, prefixes)
       .then((res) => {
         setFiles([...files, ...res.names]);
         setLast(res.last);
@@ -29,8 +28,7 @@ export default function useList(lastFile, prefixes) {
       setFiles([]);
       toggleLoading();
       setError("");
-      const prefix = prefixes.join("");
-      list("", prefix)
+      list("", prefixes)
         .then((res) => {
           setFiles(res.names);
           setLast(res.last);

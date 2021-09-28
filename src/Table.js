@@ -68,7 +68,7 @@ export default function Table() {
     const key = file.name;
 
     try {
-      const res = await put(`${prefixes.join("")}${key}`, buffer, contentType);
+      await put(`${prefixes.join("/")}/${key}`, buffer, contentType);
       setToastMsg(`Uploaded ${key} successfully.`);
       setTimeout(() => {
         setToastMsg(null);
@@ -91,11 +91,13 @@ export default function Table() {
     event.stopPropagation();
     setToastMsg(`Drop to upload the file.`);
   }
+
   function handleDragLeave(event) {
     event.preventDefault();
     event.stopPropagation();
     setToastMsg(null);
   }
+
   return (
     <div
       onDragEnter={(event) => handleDragEnter(event)}
@@ -110,7 +112,7 @@ export default function Table() {
               key={`${prefix}${index}`}
               onClick={() => setPrefixes(prefixes.slice(0, index + 1))}
             >
-              {prefix}
+              {prefix}&nbsp;/&nbsp;
             </span>
           ))
         ) : (
@@ -136,7 +138,13 @@ export default function Table() {
       {!preview && (
         <div className="table">
           <div className="table-header">
-            {prefixes.length > 0 ? prefixes.join("") : "/"}
+            {prefixes.length > 0 ? (
+              <ChevronLeft
+                className="back-icon"
+                onClick={() => setPrefixes(prefixes.slice(0, -1))}
+              />
+            ) : null}
+            {prefixes.length > 0 ? prefixes[prefixes.length - 1] : "/"}
           </div>
           <div></div>
           <div className="rows">
@@ -162,7 +170,7 @@ export default function Table() {
                             : handlePreview(file)
                         }
                       >
-                        {file.displayName}
+                        {file.name}
                       </div>
                     ) : (
                       <div className="file-name-disabled">{file.name}</div>
