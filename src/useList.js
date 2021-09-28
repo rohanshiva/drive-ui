@@ -3,27 +3,31 @@ import { useEffect, useState } from "react";
 import { list } from "./api";
 import useToggle from "./useToggle";
 
-export default function useList(lastFile, prefixes) {
+export default function useList() {
   const [loading, toggleLoading] = useToggle();
   const [error, setError] = useState("");
   const [files, setFiles] = useState([]);
+
+  const [prefixes, setPrefixes] = useState([]);
+
   const [last, setLast] = useState("");
+  const [lastFile, setLastFile] = useState("");
 
   useEffect(() => {
-    if (lastFile) {
+    if (last) {
       toggleLoading();
       setError("");
-      list(lastFile, prefixes)
+      list(last, prefixes)
         .then((res) => {
           setFiles([...files, ...res.names]);
-          setLast(res.last);
+          setLastFile(res.last);
           toggleLoading();
         })
         .catch((err) => {
           setError(err);
         });
     }
-  }, [lastFile]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [last]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setFiles([]);
@@ -32,7 +36,7 @@ export default function useList(lastFile, prefixes) {
     list("", prefixes)
       .then((res) => {
         setFiles(res.names);
-        setLast(res.last);
+        setLastFile(res.last);
         toggleLoading();
       })
       .catch((err) => {
@@ -40,5 +44,14 @@ export default function useList(lastFile, prefixes) {
       });
   }, [prefixes]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return { loading, error, files, last };
+  return {
+    loading,
+    error,
+    files,
+    prefixes,
+    last: lastFile,
+    setFiles,
+    setLast,
+    setPrefixes,
+  };
 }

@@ -29,6 +29,7 @@ const parseNames = (names = [], prefix = "") => {
       isImage,
       name: removeTrailingSlash(prefixRemoved),
       prefix,
+      selected: false,
     };
   });
 };

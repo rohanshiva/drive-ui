@@ -43,7 +43,7 @@
   padding: 0.25rem 1rem;
   display: grid;
   align-items: center;
-  grid-template-columns: fit-content(2rem) 2fr 1fr;
+  grid-template-columns: fit-content(4rem) 2fr 1fr;
 }
 .table-row:hover {
   background-color: #f5f4f7;
@@ -55,6 +55,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.checkbox-icon {
+  display: flex;
+  align-items: center;
+}
+.checkbox-icon .checkbox {
+  margin-right: 1rem;
 }
 .actions {
   display: grid;

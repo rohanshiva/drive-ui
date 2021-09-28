@@ -14,12 +14,19 @@ import { downloadBlob } from "./util.js";
 import "./Table.css";
 
 export default function Table() {
-  const [lastFile, setLastFile] = useState("");
   const [preview, setPreview] = useState(null);
-  const [prefixes, setPrefixes] = useState([]);
   const [toastMsg, setToastMsg] = useState(null);
 
-  const { files, last, loading, error } = useList(lastFile, prefixes);
+  const {
+    files,
+    prefixes,
+    last,
+    loading,
+    error,
+    setFiles,
+    setLast,
+    setPrefixes,
+  } = useList();
 
   const observer = useRef();
 
@@ -29,7 +36,7 @@ export default function Table() {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && last) {
-          setLastFile(last);
+          setLast(last);
         }
       });
       if (node) observer.current.observe(node);
@@ -38,7 +45,7 @@ export default function Table() {
   );
 
   function handlePageChange(prefixes) {
-    setLastFile("");
+    setLast("");
     setPrefixes(prefixes);
   }
 
@@ -177,8 +184,25 @@ export default function Table() {
                   key={`${file.rawName}${index}`}
                 >
                   <div className="td">
-                    <div className="file-icon">
-                      {file.isFolder ? <Folder /> : <File />}
+                    <div className="checkbox-icon">
+                      <div className="checkbox">
+                        <input
+                          type="checkbox"
+                          checked={file.selected}
+                          disabled={file.isFolder}
+                          onChange={(e) => {
+                            const newFiles = [...files];
+                            newFiles[index] = {
+                              ...newFiles[index],
+                              selected: e.target.checked,
+                            };
+                            setFiles(newFiles);
+                          }}
+                        />
+                      </div>
+                      <div className="file-icon">
+                        {file.isFolder ? <Folder /> : <File />}
+                      </div>
                     </div>
                   </div>
                   <div className="td">
