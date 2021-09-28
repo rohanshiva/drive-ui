@@ -10,27 +10,12 @@ export default function useList(lastFile, prefixes) {
   const [last, setLast] = useState("");
 
   useEffect(() => {
-    toggleLoading();
-    setError("");
-    list(lastFile, prefixes)
-      .then((res) => {
-        setFiles([...files, ...res.names]);
-        setLast(res.last);
-        toggleLoading();
-      })
-      .catch((err) => {
-        setError(err);
-      });
-  }, [lastFile]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (prefixes.length) {
-      setFiles([]);
+    if (lastFile) {
       toggleLoading();
       setError("");
-      list("", prefixes)
+      list(lastFile, prefixes)
         .then((res) => {
-          setFiles(res.names);
+          setFiles([...files, ...res.names]);
           setLast(res.last);
           toggleLoading();
         })
@@ -38,6 +23,21 @@ export default function useList(lastFile, prefixes) {
           setError(err);
         });
     }
+  }, [lastFile]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    setFiles([]);
+    toggleLoading();
+    setError("");
+    list("", prefixes)
+      .then((res) => {
+        setFiles(res.names);
+        setLast(res.last);
+        toggleLoading();
+      })
+      .catch((err) => {
+        setError(err);
+      });
   }, [prefixes]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { loading, error, files, last };

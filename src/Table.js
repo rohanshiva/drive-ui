@@ -31,8 +31,13 @@ export default function Table() {
     [loading, last]
   );
 
+  function handlePageChange(prefixes) {
+    setLastFile("");
+    setPrefixes(prefixes);
+  }
+
   function handleFolder(file) {
-    setPrefixes([...prefixes, file.name]);
+    handlePageChange([...prefixes, file.name]);
   }
 
   async function handleDownload(file) {
@@ -110,7 +115,7 @@ export default function Table() {
           prefixes.map((prefix, index) => (
             <span
               key={`${prefix}${index}`}
-              onClick={() => setPrefixes(prefixes.slice(0, index + 1))}
+              onClick={() => handlePageChange(prefixes.slice(0, index + 1))}
             >
               {prefix}&nbsp;/&nbsp;
             </span>
@@ -141,7 +146,7 @@ export default function Table() {
             {prefixes.length > 0 ? (
               <ChevronLeft
                 className="back-icon"
-                onClick={() => setPrefixes(prefixes.slice(0, -1))}
+                onClick={() => handlePageChange(prefixes.slice(0, -1))}
               />
             ) : null}
             {prefixes.length > 0 ? prefixes[prefixes.length - 1] : "/"}
