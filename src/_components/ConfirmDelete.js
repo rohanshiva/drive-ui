@@ -7,7 +7,7 @@ import {
   largeBoldTextStyle,
 } from "../styles/_typographies.js";
 
-const DomainModal = styled.div`
+const DeleteModal = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${(props) => props.theme.colors.secondaryFillColor};
@@ -17,30 +17,30 @@ const DomainModal = styled.div`
   width: 420px;
 `;
 
-const DomainModalTitle = styled.div`
+const DeleteModalTitle = styled.div`
   padding-bottom: 2px;
   ${largeBoldTextStyle}
 `;
 
-const DomainBody = styled.div`
+const DeleteBody = styled.div`
   display: flex;
   flex-direction: column;
   padding-bottom: 2px;
 `;
 
-const DomainModalDesc = styled.div`
+const DeleteModalDesc = styled.div`
   ${regularTextStyle}
   padding-top: 1px;
   padding-bottom: 1px;
 `;
 
-const DomainError = styled.span`
+const DeleteError = styled.span`
   ${smallTextStyle}
   color: ${(props) => props.theme.colors.deleteRed};
   padding-top: 1px;
 `;
 
-const DomainModalFooter = styled.div`
+const DeleteModalFooter = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -99,23 +99,23 @@ const Button = styled.button`
 `;
 
 const ConfirmDelete = ({ errorMessage, onConfirm, onCancel }) => (
-  <DomainModal>
-    <DomainModalTitle>Confirm Delete</DomainModalTitle>
-    <DomainBody>
-      <DomainModalDesc>
+  <DeleteModal>
+    <DeleteModalTitle>Confirm Delete</DeleteModalTitle>
+    <DeleteBody>
+      <DeleteModalDesc>
         Are you sure you want to delete this item?
-      </DomainModalDesc>
-      <DomainError>{errorMessage}</DomainError>
-    </DomainBody>
-    <DomainModalFooter>
+      </DeleteModalDesc>
+      <DeleteError>{errorMessage}</DeleteError>
+    </DeleteBody>
+    <DeleteModalFooter>
       <DeleteButton alt="Delete" title="Delete" isConfirmed onClick={onConfirm}>
         Delete
       </DeleteButton>
       <Button alt="Cancel" title="Cancel" onClick={onCancel}>
         Cancel
       </Button>
-    </DomainModalFooter>
-  </DomainModal>
+    </DeleteModalFooter>
+  </DeleteModal>
 );
 
 export default ConfirmDelete;
