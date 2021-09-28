@@ -6,7 +6,8 @@ import {
   removeTrailingSlash,
 } from "./util.js";
 
-export const list = async (last = "", prefix = "") => {
+export const list = async (last = "", prefixes = []) => {
+  const prefix = prefixes.join("/").concat("/");
   const { paging, names } = await drive.list({
     limit: 22,
     last,
@@ -26,9 +27,9 @@ const parseNames = (names = [], prefix = "") => {
       rawName: name,
       isFolder,
       isImage,
-      name: prefixRemoved,
-      displayName: removeTrailingSlash(prefixRemoved),
+      name: removeTrailingSlash(prefixRemoved),
       prefix,
+      selected: false,
     };
   });
 };

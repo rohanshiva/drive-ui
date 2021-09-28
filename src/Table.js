@@ -1,5 +1,11 @@
 import React, { useState, useRef, useCallback } from "react";
-import { DownloadCloud, ChevronLeft, Folder, File } from "react-feather";
+import {
+  Trash2,
+  DownloadCloud,
+  ChevronLeft,
+  Folder,
+  File,
+} from "react-feather";
 
 import { get, put } from "./api.js";
 import useList from "./useList";
@@ -8,12 +14,19 @@ import { downloadBlob } from "./util.js";
 import "./Table.css";
 
 export default function Table() {
-  const [lastFile, setLastFile] = useState("");
   const [preview, setPreview] = useState(null);
-  const [prefixes, setPrefixes] = useState([]);
   const [toastMsg, setToastMsg] = useState(null);
 
-  const { files, last, loading, error } = useList(lastFile, prefixes);
+  const {
+    files,
+    prefixes,
+    last,
+    loading,
+    error,
+    setFiles,
+    setLast,
+    setPrefixes,
+  } = useList();
 
   const observer = useRef();
 
@@ -23,16 +36,21 @@ export default function Table() {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && last) {
-          setLastFile(last);
+          setLast(last);
         }
       });
       if (node) observer.current.observe(node);
     },
-    [loading, last]
+    [loading, last, setLast]
   );
 
+  function handlePageChange(prefixes) {
+    setLast("");
+    setPrefixes(prefixes);
+  }
+
   function handleFolder(file) {
-    setPrefixes([...prefixes, file.name]);
+    handlePageChange([...prefixes, file.name]);
   }
 
   async function handleDownload(file) {
@@ -51,7 +69,7 @@ export default function Table() {
         blob = blob.slice(0, blob.size, "image/svg+xml");
       }
       const blobUrl = window.URL.createObjectURL(blob);
-      setPreview({ name: file.rawName, url: blobUrl });
+      setPreview({ file, name: file.name, url: blobUrl });
     } catch (error) {
       console.error(error);
     }
@@ -68,7 +86,7 @@ export default function Table() {
     const key = file.name;
 
     try {
-      const res = await put(`${prefixes.join("")}${key}`, buffer, contentType);
+      await put(`${prefixes.join("/")}/${key}`, buffer, contentType);
       setToastMsg(`Uploaded ${key} successfully.`);
       setTimeout(() => {
         setToastMsg(null);
@@ -91,11 +109,30 @@ export default function Table() {
     event.stopPropagation();
     setToastMsg(`Drop to upload the file.`);
   }
+
   function handleDragLeave(event) {
     event.preventDefault();
     event.stopPropagation();
     setToastMsg(null);
   }
+
+  function onChangeCheckBox(event, index) {
+    const selectedFile = files.api[index];
+    const checked = event.target.checked;
+    const selected = checked
+      ? [...files.selected, selectedFile.rawName]
+      : files.selected.filter((s) => s !== selectedFile.rawName);
+    setFiles({
+      selected,
+      api: Object.assign([...files.api], {
+        [index]: {
+          ...selectedFile,
+          selected: checked,
+        },
+      }),
+    });
+  }
+
   return (
     <div
       onDragEnter={(event) => handleDragEnter(event)}
@@ -108,9 +145,9 @@ export default function Table() {
           prefixes.map((prefix, index) => (
             <span
               key={`${prefix}${index}`}
-              onClick={() => setPrefixes(prefixes.slice(0, index + 1))}
+              onClick={() => handlePageChange(prefixes.slice(0, index + 1))}
             >
-              {prefix}
+              {prefix}&nbsp;/&nbsp;
             </span>
           ))
         ) : (
@@ -120,13 +157,23 @@ export default function Table() {
       {preview && (
         <div className="preview-container">
           <div className="preview-nav">
-            <ChevronLeft
-              className="back-icon"
-              onClick={() => {
-                setPreview(null);
-              }}
-            />
-            <div>{preview.name}</div>
+            <div className="left">
+              <ChevronLeft
+                className="header-icon mgr-10px"
+                onClick={() => {
+                  setPreview(null);
+                }}
+              />
+              <div>{preview.name}</div>
+            </div>
+
+            <div className="right">
+              <DownloadCloud
+                className="header-icon mgr-10px"
+                onClick={async () => await handleDownload(preview.file)}
+              />
+              <Trash2 className="header-icon" onClick={() => {}} />
+            </div>
           </div>
           <div className="img-container">
             <img src={preview.url} alt={preview.name} />
@@ -136,20 +183,51 @@ export default function Table() {
       {!preview && (
         <div className="table">
           <div className="table-header">
-            {prefixes.length > 0 ? prefixes.join("") : "/"}
+            <div className="left">
+              {prefixes.length > 0 && files.selected.length === 0 ? (
+                <>
+                  <ChevronLeft
+                    className="header-icon mgr-10px"
+                    onClick={() => handlePageChange(prefixes.slice(0, -1))}
+                  />
+                  {prefixes[prefixes.length - 1]}
+                </>
+              ) : files.selected.length === 0 ? (
+                "/"
+              ) : (
+                `${files.selected.length} item${
+                  files.selected.length > 1 ? "s" : ""
+                } selected`
+              )}
+            </div>
+            <div className="right">
+              {files.selected.length !== 0 ? (
+                <Trash2 className="header-icon" onClick={() => {}} />
+              ) : null}
+            </div>
           </div>
           <div></div>
           <div className="rows">
-            {files.map((file, index) => {
+            {files.api.map((file, index) => {
               return (
                 <div
                   className="table-row"
-                  ref={files.length === index + 1 ? lastElementRef : null}
+                  ref={files.api.length === index + 1 ? lastElementRef : null}
                   key={`${file.rawName}${index}`}
                 >
                   <div className="td">
-                    <div className="file-icon">
-                      {file.isFolder ? <Folder /> : <File />}
+                    <div className="checkbox-icon">
+                      <div className="checkbox">
+                        <input
+                          type="checkbox"
+                          checked={file.selected}
+                          disabled={file.isFolder}
+                          onChange={(e) => onChangeCheckBox(e, index)}
+                        />
+                      </div>
+                      <div className="file-icon">
+                        {file.isFolder ? <Folder /> : <File />}
+                      </div>
                     </div>
                   </div>
                   <div className="td">
@@ -162,7 +240,7 @@ export default function Table() {
                             : handlePreview(file)
                         }
                       >
-                        {file.displayName}
+                        {file.name}
                       </div>
                     ) : (
                       <div className="file-name-disabled">{file.name}</div>
