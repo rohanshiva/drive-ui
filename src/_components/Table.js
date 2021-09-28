@@ -1,21 +1,26 @@
+import { ThemeProvider } from "@emotion/react";
+import DetaModal from "../_components/DetaModal";
 import React, { useState, useRef, useCallback } from "react";
 import {
-  Trash2,
-  DownloadCloud,
-  ChevronLeft,
-  Folder,
   File,
+  Trash2,
+  Folder,
+  ChevronLeft,
+  DownloadCloud,
 } from "react-feather";
 
 import { get, put } from "../api/api";
 import useList from "../hooks/useList";
+import useToggle from "../hooks/useToggle";
 import { downloadBlob } from "../utils/util";
+import ConfirmDelete from "../_components/ConfirmDelete";
 
 import "./Table.css";
 
-export default function Table(props) {
+export default function Table({ theme }) {
   const [preview, setPreview] = useState(null);
   const [toastMsg, setToastMsg] = useState(null);
+  const [modalOpen, toggleModal] = useToggle();
 
   const {
     files,
@@ -134,155 +139,167 @@ export default function Table(props) {
   }
 
   return (
-    <div
-      onDragEnter={(event) => handleDragEnter(event)}
-      onDragLeave={(event) => handleDragLeave(event)}
-      onDragOver={(event) => handleDragOver(event)}
-      onDrop={async (event) => await handleDrop(event)}
-    >
-      <div className="prefixes">
-        {prefixes.length > 0 ? (
-          prefixes.map((prefix, index) => (
-            <span
-              key={`${prefix}${index}`}
-              onClick={() => handlePageChange(prefixes.slice(0, index + 1))}
-            >
-              {prefix}&nbsp;/&nbsp;
-            </span>
-          ))
-        ) : (
-          <span>/</span>
-        )}
-      </div>
-      {preview && (
-        <div className="preview-container">
-          <div className="preview-nav">
-            <div className="left">
-              <ChevronLeft
-                className="header-icon mgr-10px"
-                onClick={() => {
-                  setPreview(null);
-                }}
-              />
-              <div>{preview.name}</div>
-            </div>
-
-            <div className="right">
-              <DownloadCloud
-                className="header-icon mgr-10px"
-                onClick={async () => await handleDownload(preview.file)}
-              />
-              <Trash2 className="header-icon" onClick={() => {}} />
-            </div>
-          </div>
-          <div className="img-container">
-            <img src={preview.url} alt={preview.name} />
-          </div>
+    <ThemeProvider theme={theme}>
+      <div
+        onDragEnter={(event) => handleDragEnter(event)}
+        onDragLeave={(event) => handleDragLeave(event)}
+        onDragOver={(event) => handleDragOver(event)}
+        onDrop={async (event) => await handleDrop(event)}
+      >
+        <div className="prefixes">
+          {prefixes.length > 0 ? (
+            prefixes.map((prefix, index) => (
+              <span
+                key={`${prefix}${index}`}
+                onClick={() => handlePageChange(prefixes.slice(0, index + 1))}
+              >
+                {prefix}&nbsp;/&nbsp;
+              </span>
+            ))
+          ) : (
+            <span>/</span>
+          )}
         </div>
-      )}
-      {!preview && (
-        <div className="table">
-          <div className="table-header">
-            <div className="left">
-              {prefixes.length > 0 && files.selected.length === 0 ? (
-                <>
-                  <ChevronLeft
-                    className="header-icon mgr-10px"
-                    onClick={() => handlePageChange(prefixes.slice(0, -1))}
-                  />
-                  {prefixes[prefixes.length - 1]}
-                </>
-              ) : files.selected.length === 0 ? (
-                "/"
-              ) : (
-                `${files.selected.length} item${
-                  files.selected.length > 1 ? "s" : ""
-                } selected`
-              )}
-            </div>
-            <div className="right">
-              {files.selected.length !== 0 ? (
+        {preview && (
+          <div className="preview-container">
+            <div className="preview-nav">
+              <div className="left">
+                <ChevronLeft
+                  className="header-icon mgr-10px"
+                  onClick={() => {
+                    setPreview(null);
+                  }}
+                />
+                <div>{preview.name}</div>
+              </div>
+
+              <div className="right">
+                <DownloadCloud
+                  className="header-icon mgr-10px"
+                  onClick={async () => await handleDownload(preview.file)}
+                />
                 <Trash2 className="header-icon" onClick={() => {}} />
-              ) : null}
+              </div>
+            </div>
+            <div className="img-container">
+              <img src={preview.url} alt={preview.name} />
             </div>
           </div>
-          <div></div>
-          <div className="rows">
-            {files.api.map((file, index) => {
-              return (
-                <div
-                  className="table-row"
-                  ref={files.api.length === index + 1 ? lastElementRef : null}
-                  key={`${file.rawName}${index}`}
-                >
-                  <div className="td">
-                    <div className="checkbox-icon">
-                      <div className="checkbox">
-                        <input
-                          type="checkbox"
-                          checked={file.selected}
-                          disabled={file.isFolder}
-                          onChange={(e) => onChangeCheckBox(e, index)}
-                        />
-                      </div>
-                      <div className="file-icon">
-                        {file.isFolder ? <Folder /> : <File />}
+        )}
+        {!preview && (
+          <div className="table">
+            <div className="table-header">
+              <div className="left">
+                {prefixes.length > 0 && files.selected.length === 0 ? (
+                  <>
+                    <ChevronLeft
+                      className="header-icon mgr-10px"
+                      onClick={() => handlePageChange(prefixes.slice(0, -1))}
+                    />
+                    {prefixes[prefixes.length - 1]}
+                  </>
+                ) : files.selected.length === 0 ? (
+                  "/"
+                ) : (
+                  `${files.selected.length} item${
+                    files.selected.length > 1 ? "s" : ""
+                  } selected`
+                )}
+              </div>
+              <div className="right">
+                {files.selected.length !== 0 ? (
+                  <Trash2
+                    className="header-icon"
+                    onClick={() => toggleModal()}
+                  />
+                ) : null}
+              </div>
+            </div>
+            <div></div>
+            <div className="rows">
+              {files.api.map((file, index) => {
+                return (
+                  <div
+                    className="table-row"
+                    ref={files.api.length === index + 1 ? lastElementRef : null}
+                    key={`${file.rawName}${index}`}
+                  >
+                    <div className="td">
+                      <div className="checkbox-icon">
+                        <div className="checkbox">
+                          <input
+                            type="checkbox"
+                            checked={file.selected}
+                            disabled={file.isFolder}
+                            onChange={(e) => onChangeCheckBox(e, index)}
+                          />
+                        </div>
+                        <div className="file-icon">
+                          {file.isFolder ? <Folder /> : <File />}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="td">
-                    {file.isFolder || file.isImage ? (
-                      <div
-                        className="file-name"
-                        onClick={() =>
-                          file.isFolder
-                            ? handleFolder(file)
-                            : handlePreview(file)
-                        }
-                      >
-                        {file.name}
+                    <div className="td">
+                      {file.isFolder || file.isImage ? (
+                        <div
+                          className="file-name"
+                          onClick={() =>
+                            file.isFolder
+                              ? handleFolder(file)
+                              : handlePreview(file)
+                          }
+                        >
+                          {file.name}
+                        </div>
+                      ) : (
+                        <div className="file-name-disabled">{file.name}</div>
+                      )}
+                    </div>
+
+                    {!file.isFolder && (
+                      <div className="td">
+                        <div className="actions">
+                          <button
+                            className="action-btn"
+                            onClick={async () => await handleDownload(file)}
+                          >
+                            <div className="action-icon">
+                              <DownloadCloud />
+                            </div>
+                          </button>
+                        </div>
                       </div>
-                    ) : (
-                      <div className="file-name-disabled">{file.name}</div>
                     )}
                   </div>
-
-                  {!file.isFolder && (
-                    <div className="td">
-                      <div className="actions">
-                        <button
-                          className="action-btn"
-                          onClick={async () => await handleDownload(file)}
-                        >
-                          <div className="action-icon">
-                            <DownloadCloud />
-                          </div>
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                );
+              })}
+              {loading && (
+                <div className="table-row">
+                  <div className="td"></div>
+                  <div className="td">
+                    <div className="fileName">Loading...</div>
+                  </div>
                 </div>
-              );
-            })}
-            {loading && (
-              <div className="table-row">
-                <div className="td"></div>
-                <div className="td">
-                  <div className="fileName">Loading...</div>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
+            <div>{error}</div>
           </div>
-          <div>{error}</div>
-        </div>
-      )}
-      {toastMsg && (
-        <div className="toast-container">
-          <div className="upload-toast">
-            <div className="toast-msg">{toastMsg}</div>
+        )}
+        {toastMsg && (
+          <div className="toast-container">
+            <div className="upload-toast">
+              <div className="toast-msg">{toastMsg}</div>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+      <DetaModal isOpen={modalOpen} toggleModal={toggleModal}>
+        <ConfirmDelete
+          errorMessage={error}
+          onConfirm={() => {}}
+          onCancel={toggleModal}
+        />
+      </DetaModal>
+    </ThemeProvider>
   );
 }
