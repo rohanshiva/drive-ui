@@ -7,13 +7,13 @@ import {
   File,
 } from "react-feather";
 
-import { get, put } from "./api.js";
-import useList from "./useList";
-import { downloadBlob } from "./util.js";
+import { get, put } from "../api/api";
+import useList from "../hooks/useList";
+import { downloadBlob } from "../utils/util";
 
 import "./Table.css";
 
-export default function Table() {
+export default function Table(props) {
   const [preview, setPreview] = useState(null);
   const [toastMsg, setToastMsg] = useState(null);
 

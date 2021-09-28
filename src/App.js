@@ -1,9 +1,10 @@
-import Table from "./Table.js";
+import Table from "./_components/Table";
+import { lightMode } from "./styles/_themes";
 
 function App() {
   return (
     <div className="App">
-      <Table />
+      <Table theme={lightMode} />
     </div>
   );
 }
