@@ -41,7 +41,7 @@ export default function Table() {
       });
       if (node) observer.current.observe(node);
     },
-    [loading, last]
+    [loading, last, setLast]
   );
 
   function handlePageChange(prefixes) {
@@ -116,6 +116,23 @@ export default function Table() {
     setToastMsg(null);
   }
 
+  function onChangeCheckBox(event, index) {
+    const selectedFile = files.api[index];
+    const checked = event.target.checked;
+    const selected = checked
+      ? [...files.selected, selectedFile.rawName]
+      : files.selected.filter((s) => s !== selectedFile.rawName);
+    setFiles({
+      selected,
+      api: Object.assign([...files.api], {
+        [index]: {
+          ...selectedFile,
+          selected: checked,
+        },
+      }),
+    });
+  }
+
   return (
     <div
       onDragEnter={(event) => handleDragEnter(event)}
@@ -142,7 +159,7 @@ export default function Table() {
           <div className="preview-nav">
             <div className="left">
               <ChevronLeft
-                className="header-icon"
+                className="header-icon mgr-10px"
                 onClick={() => {
                   setPreview(null);
                 }}
@@ -152,7 +169,7 @@ export default function Table() {
 
             <div className="right">
               <DownloadCloud
-                className="header-icon"
+                className="header-icon mgr-10px"
                 onClick={async () => await handleDownload(preview.file)}
               />
               <Trash2 className="header-icon" onClick={() => {}} />
@@ -166,21 +183,36 @@ export default function Table() {
       {!preview && (
         <div className="table">
           <div className="table-header">
-            {prefixes.length > 0 ? (
-              <ChevronLeft
-                className="header-icon"
-                onClick={() => handlePageChange(prefixes.slice(0, -1))}
-              />
-            ) : null}
-            {prefixes.length > 0 ? prefixes[prefixes.length - 1] : "/"}
+            <div className="left">
+              {prefixes.length > 0 && files.selected.length === 0 ? (
+                <>
+                  <ChevronLeft
+                    className="header-icon mgr-10px"
+                    onClick={() => handlePageChange(prefixes.slice(0, -1))}
+                  />
+                  {prefixes[prefixes.length - 1]}
+                </>
+              ) : files.selected.length === 0 ? (
+                "/"
+              ) : (
+                `${files.selected.length} item${
+                  files.selected.length > 1 ? "s" : ""
+                } selected`
+              )}
+            </div>
+            <div className="right">
+              {files.selected.length !== 0 ? (
+                <Trash2 className="header-icon" onClick={() => {}} />
+              ) : null}
+            </div>
           </div>
           <div></div>
           <div className="rows">
-            {files.map((file, index) => {
+            {files.api.map((file, index) => {
               return (
                 <div
                   className="table-row"
-                  ref={files.length === index + 1 ? lastElementRef : null}
+                  ref={files.api.length === index + 1 ? lastElementRef : null}
                   key={`${file.rawName}${index}`}
                 >
                   <div className="td">
@@ -190,14 +222,7 @@ export default function Table() {
                           type="checkbox"
                           checked={file.selected}
                           disabled={file.isFolder}
-                          onChange={(e) => {
-                            const newFiles = [...files];
-                            newFiles[index] = {
-                              ...newFiles[index],
-                              selected: e.target.checked,
-                            };
-                            setFiles(newFiles);
-                          }}
+                          onChange={(e) => onChangeCheckBox(e, index)}
                         />
                       </div>
                       <div className="file-icon">

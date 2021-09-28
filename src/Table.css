@@ -36,8 +36,18 @@
   display: flex;
   padding: 0.25rem 1rem;
   align-items: center;
+  justify-content: space-between;
   background-color: #eae5e5;
   border-bottom: 1px solid #777984;
+}
+.table-header .left {
+  display: flex;
+  align-items: center;
+}
+
+.table-row .right {
+  display: flex;
+  align-items: center;
 }
 .table-row {
   padding: 0.25rem 1rem;
@@ -87,6 +97,8 @@
 }
 .header-icon {
   color: #a8aaad;
+}
+.mgr-10px {
   margin-right: 10px;
 }
 .header-icon:hover {

@@ -6,7 +6,7 @@ import useToggle from "./useToggle";
 export default function useList() {
   const [loading, toggleLoading] = useToggle();
   const [error, setError] = useState("");
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState({ selected: [], api: [] });
 
   const [prefixes, setPrefixes] = useState([]);
 
@@ -19,7 +19,7 @@ export default function useList() {
       setError("");
       list(last, prefixes)
         .then((res) => {
-          setFiles([...files, ...res.names]);
+          setFiles({ ...files, api: [...files.api, ...res.names] });
           setLastFile(res.last);
           toggleLoading();
         })
@@ -30,12 +30,12 @@ export default function useList() {
   }, [last]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    setFiles([]);
+    setFiles({ selected: [], api: [] });
     toggleLoading();
     setError("");
     list("", prefixes)
       .then((res) => {
-        setFiles(res.names);
+        setFiles({ selected: [], api: res.names });
         setLastFile(res.last);
         toggleLoading();
       })
