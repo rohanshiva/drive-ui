@@ -34,9 +34,9 @@ const parseNames = (names = [], prefix = "") => {
   });
 };
 
-export const deleteDrawing = async (key) => {
-  const deletedFile = await drive.delete(key);
-  return deletedFile;
+export const deleteKeys = async (keys = []) => {
+  const res = await drive.deleteMany(keys);
+  return res;
 };
 
 export const get = async (key) => {

@@ -102,12 +102,14 @@ const Button = styled.button`
     `}
 `;
 
-const ConfirmDelete = ({ errorMessage, onConfirm, onCancel }) => (
+const ConfirmDelete = ({ count = 1, errorMessage, onConfirm, onCancel }) => (
   <DeleteModal>
     <DeleteModalTitle>Confirm Delete</DeleteModalTitle>
     <DeleteBody>
       <DeleteModalDesc>
-        Are you sure you want to delete this item?
+        {`Are you sure you want to delete ${
+          count > 1 ? `${count} selected files` : "the file"
+        }?`}
       </DeleteModalDesc>
       <DeleteError>{errorMessage}</DeleteError>
     </DeleteBody>

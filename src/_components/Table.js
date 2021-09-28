@@ -9,10 +9,10 @@ import {
   DownloadCloud,
 } from "react-feather";
 
-import { get, put } from "../api/api";
 import useList from "../hooks/useList";
 import useToggle from "../hooks/useToggle";
 import { downloadBlob } from "../utils/util";
+import { get, put, deleteKeys } from "../api/api";
 import ConfirmDelete from "../_components/ConfirmDelete";
 
 import "./Table.css";
@@ -138,6 +138,32 @@ export default function Table({ theme }) {
     });
   }
 
+  function handleDelete(keys) {
+    deleteKeys(keys)
+      .then((res) => {
+        const deleted = res?.deleted || [];
+        setFiles({
+          selected: [],
+          api: files.api.filter((file) => {
+            return !deleted.includes(file.rawName);
+          }),
+        });
+        toggleModal();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  function handlePreviewDelete() {
+    handleDelete([preview.file.rawName]);
+    setPreview(null);
+  }
+
+  function handleSelectedDelete() {
+    handleDelete(files.selected);
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <div
@@ -178,7 +204,12 @@ export default function Table({ theme }) {
                   className="header-icon mgr-10px"
                   onClick={async () => await handleDownload(preview.file)}
                 />
-                <Trash2 className="header-icon" onClick={() => {}} />
+                <Trash2
+                  className="header-icon"
+                  onClick={() => {
+                    toggleModal();
+                  }}
+                />
               </div>
             </div>
             <div className="img-container">
@@ -295,8 +326,11 @@ export default function Table({ theme }) {
       </div>
       <DetaModal isOpen={modalOpen} toggleModal={toggleModal}>
         <ConfirmDelete
+          count={preview ? 1 : files.selected.length}
           errorMessage={error}
-          onConfirm={() => {}}
+          onConfirm={() =>
+            preview ? handlePreviewDelete() : handleSelectedDelete()
+          }
           onCancel={toggleModal}
         />
       </DetaModal>
