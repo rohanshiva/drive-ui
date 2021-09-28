@@ -1,5 +1,11 @@
 import React, { useState, useRef, useCallback } from "react";
-import { DownloadCloud, ChevronLeft, Folder, File } from "react-feather";
+import {
+  Trash2,
+  DownloadCloud,
+  ChevronLeft,
+  Folder,
+  File,
+} from "react-feather";
 
 import { get, put } from "./api.js";
 import useList from "./useList";
@@ -56,7 +62,7 @@ export default function Table() {
         blob = blob.slice(0, blob.size, "image/svg+xml");
       }
       const blobUrl = window.URL.createObjectURL(blob);
-      setPreview({ name: file.name, url: blobUrl });
+      setPreview({ file, name: file.name, url: blobUrl });
     } catch (error) {
       console.error(error);
     }
@@ -127,13 +133,23 @@ export default function Table() {
       {preview && (
         <div className="preview-container">
           <div className="preview-nav">
-            <ChevronLeft
-              className="back-icon"
-              onClick={() => {
-                setPreview(null);
-              }}
-            />
-            <div>{preview.name}</div>
+            <div className="left">
+              <ChevronLeft
+                className="header-icon"
+                onClick={() => {
+                  setPreview(null);
+                }}
+              />
+              <div>{preview.name}</div>
+            </div>
+
+            <div className="right">
+              <DownloadCloud
+                className="header-icon"
+                onClick={async () => await handleDownload(preview.file)}
+              />
+              <Trash2 className="header-icon" onClick={() => {}} />
+            </div>
           </div>
           <div className="img-container">
             <img src={preview.url} alt={preview.name} />
@@ -145,7 +161,7 @@ export default function Table() {
           <div className="table-header">
             {prefixes.length > 0 ? (
               <ChevronLeft
-                className="back-icon"
+                className="header-icon"
                 onClick={() => handlePageChange(prefixes.slice(0, -1))}
               />
             ) : null}
