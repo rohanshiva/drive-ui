@@ -39,10 +39,11 @@ export default class API {
     return buf;
   }
 
-  async put(key, blob, contentType) {
+  async put(key, prefixes = [], blob, contentType) {
+    const prefix = prefixes.join("/").concat("/");
     const drive = await API.driveObject(this.idOrKey, this.drive);
-    const buf = await drive.put(key, { data: blob, contentType });
-    return buf;
+    const res = await drive.put(`${prefix}${key}`, { data: blob, contentType });
+    return API.parseNames([res], prefix);
   }
 
   static async driveObject(idOrKey, drive) {

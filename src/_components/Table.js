@@ -283,23 +283,23 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
     event.stopPropagation();
     setToastMsg(null);
     const file = event.dataTransfer.files[0];
-    let buffer = await file.arrayBuffer();
-    buffer = new Uint8Array(buffer);
-    const contentType = file.type;
-    const key = file.name;
+    const buffer = await file.arrayBuffer();
+    const { type: contentType, name } = file;
 
     try {
-      await new API(projectId, drive).put(
-        `${prefixes.join("/")}/${key}`,
-        buffer,
+      const [file] = await new API(projectId, drive).put(
+        name,
+        prefixes,
+        new Uint8Array(buffer),
         contentType
       );
-      setToastMsg(`Uploaded ${key} successfully.`);
+      setFiles({ ...files, api: [file, ...files.api] });
+      setToastMsg(`Uploaded ${name} successfully.`);
       setTimeout(() => {
         setToastMsg(null);
       }, 3000);
     } catch (error) {
-      setToastMsg(`Failed to upload ${key} please try again.`);
+      setToastMsg(`Failed to upload ${name} please try again.`);
       setTimeout(() => {
         setToastMsg(null);
       }, 3000);
