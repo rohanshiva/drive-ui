@@ -9,13 +9,7 @@
   border-radius: 5px;
   overflow: hidden;
 }
-.prefixes {
-  margin-top: 2rem;
-  font-weight: 700;
-  font-size: 20px;
-  margin-bottom: 2rem;
-  cursor: pointer;
-}
+
 .prefixes span {
   color: #82838d;
 }
@@ -25,21 +19,7 @@
 .prefixes span:hover {
   color: #2e2e32;
 }
-.rows {
-  overflow-y: scroll;
-}
-.table-header {
-  color: #2e2e32;
-  font-weight: 700;
-  min-height: 40px;
-  max-height: 40px;
-  display: flex;
-  padding: 0.25rem 1rem;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #eae5e5;
-  border-bottom: 1px solid #777984;
-}
+
 .table-header .left {
   display: flex;
   align-items: center;
@@ -49,12 +29,7 @@
   display: flex;
   align-items: center;
 }
-.table-row {
-  padding: 0.25rem 1rem;
-  display: grid;
-  align-items: center;
-  grid-template-columns: fit-content(4rem) 2fr 1fr;
-}
+
 .table-row:hover {
   background-color: #f5f4f7;
 }

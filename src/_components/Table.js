@@ -1,6 +1,16 @@
 import { ThemeProvider } from "@emotion/react";
+import styled from "@emotion/styled";
+
 import DetaModal from "../_components/DetaModal";
 import React, { useState, useRef, useCallback } from "react";
+
+import { margin, padding } from "../styles/_formatting";
+import {
+  smallTextStyle,
+  regularTextStyle,
+  largeBoldTextStyle,
+} from "../styles/_typographies.js";
+
 import {
   File,
   Trash2,
@@ -17,6 +27,55 @@ import ConfirmDelete from "../_components/ConfirmDelete";
 
 import "./Table.css";
 
+const TableDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: #fff8f8;
+  border: 1px solid ${(props) => props.theme.colors.primary2};
+  border-radius: 5px;
+  overflow: hidden;
+  width: 998px;
+  max-height: 80vh;
+  color: ${(props) => props.theme.colors.primary2};
+`;
+
+const PrefixesDiv = styled.div`
+  ${largeBoldTextStyle};
+  font-weight: 700;
+  cursor: pointer;
+  ${margin("top", 3)};
+  ${margin("bottom", 3)};
+`;
+
+const TableRows = styled.div`
+  overflow-y: scroll;
+`;
+
+const TableHeader = styled.div`
+  color: ${(props) => props.theme.colors.header};
+  font-weight: 700;
+  min-height: 40px;
+  max-height: 40px;
+  display: flex;
+  ${padding("top", 0.1)};
+  ${padding("bottom", 0.1)};
+  ${padding("right", 2)};
+  ${padding("left", 2)};
+  align-items: center;
+  justify-content: space-between;
+  background-color: ${(props) => props.theme.colors.headerBg};
+  border-bottom: 1px solid ${(props) => props.theme.colors.primary2};
+`;
+
+const TableRow = styled.div`
+  ${padding("top", 0.1)};
+  ${padding("bottom", 0.1)};
+  ${padding("right", 2)};
+  ${padding("left", 2)};
+  display: grid;
+  align-items: center;
+  grid-template-columns: fit-content(4rem) 2fr 1fr;
+`;
 export default function Table({ theme }) {
   const [preview, setPreview] = useState(null);
   const [toastMsg, setToastMsg] = useState(null);
@@ -172,7 +231,7 @@ export default function Table({ theme }) {
         onDragOver={(event) => handleDragOver(event)}
         onDrop={async (event) => await handleDrop(event)}
       >
-        <div className="prefixes">
+        <PrefixesDiv className="prefixes">
           {prefixes.length > 0 ? (
             prefixes.map((prefix, index) => (
               <span
@@ -185,7 +244,7 @@ export default function Table({ theme }) {
           ) : (
             <span>/</span>
           )}
-        </div>
+        </PrefixesDiv>
         {preview && (
           <div className="preview-container">
             <div className="preview-nav">
@@ -218,8 +277,8 @@ export default function Table({ theme }) {
           </div>
         )}
         {!preview && (
-          <div className="table">
-            <div className="table-header">
+          <TableDiv>
+            <TableHeader className="table-header">
               <div className="left">
                 {prefixes.length > 0 && files.selected.length === 0 ? (
                   <>
@@ -245,12 +304,12 @@ export default function Table({ theme }) {
                   />
                 ) : null}
               </div>
-            </div>
+            </TableHeader>
             <div></div>
-            <div className="rows">
+            <TableRows className="rows">
               {files.api.map((file, index) => {
                 return (
-                  <div
+                  <TableRow
                     className="table-row"
                     ref={files.api.length === index + 1 ? lastElementRef : null}
                     key={`${file.rawName}${index}`}
@@ -301,7 +360,7 @@ export default function Table({ theme }) {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </TableRow>
                 );
               })}
               {loading && (
@@ -312,9 +371,9 @@ export default function Table({ theme }) {
                   </div>
                 </div>
               )}
-            </div>
+            </TableRows>
             <div>{error}</div>
-          </div>
+          </TableDiv>
         )}
         {toastMsg && (
           <div className="toast-container">
