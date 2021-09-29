@@ -1,7 +1,5 @@
 export const lightMode = {
   colors: {
-    header: "#2e2e32",
-    headerBg: "#eae5e5",
     secondaryFillColor: "#fff8f8",
     primary: "#4D5DF0",
     primary1: "#A7A8B1",
