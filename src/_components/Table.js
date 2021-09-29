@@ -1,5 +1,5 @@
+import styled from "@emotion/styled";
 import { ThemeProvider } from "@emotion/react";
-import DetaModal from "../_components/DetaModal";
 import React, { useState, useRef, useCallback } from "react";
 import {
   File,
@@ -12,10 +12,72 @@ import {
 import useList from "../hooks/useList";
 import useToggle from "../hooks/useToggle";
 import { downloadBlob } from "../utils/util";
+import DetaModal from "../_components/DetaModal";
 import { get, put, deleteKeys } from "../api/api";
 import ConfirmDelete from "../_components/ConfirmDelete";
 
 import "./Table.css";
+
+const Prefixes = styled.div`
+  margin-top: 2rem;
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 2rem;
+  cursor: pointer;
+`;
+
+const PrefixSpan = styled.span`
+  color: #82838d;
+  &:last-child {
+    color: #2e2e32;
+  }
+  &:hover {
+    color: #2e2e32;
+  }
+`;
+
+const PreviewContainer = styled.div`
+  width: 998px;
+  max-height: 80vh;
+  color: #77777c;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f4f7;
+  border: 1px solid #777984;
+  border-radius: 5px;
+  cursor: pointer;
+  overflow: hidden;
+`;
+
+const PreviewNav = styled.div`
+  height: 40px;
+  color: #2e2e32;
+  font-weight: 700;
+  min-height: 40px;
+  display: flex;
+  padding: 0.25rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #eae5e5;
+  border-bottom: 1px solid #777984;
+`;
+
+const PreviewLeft = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const PreviewRight = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const ImgContainer = styled.div`
+  display: grid;
+  place-items: center;
+  height: 100%;
+  width: 100%;
+`;
 
 export default function Table({ theme }) {
   const [preview, setPreview] = useState(null);
@@ -172,24 +234,24 @@ export default function Table({ theme }) {
         onDragOver={(event) => handleDragOver(event)}
         onDrop={async (event) => await handleDrop(event)}
       >
-        <div className="prefixes">
+        <Prefixes>
           {prefixes.length > 0 ? (
             prefixes.map((prefix, index) => (
-              <span
+              <PrefixSpan
                 key={`${prefix}${index}`}
                 onClick={() => handlePageChange(prefixes.slice(0, index + 1))}
               >
                 {prefix}&nbsp;/&nbsp;
-              </span>
+              </PrefixSpan>
             ))
           ) : (
-            <span>/</span>
+            <PrefixSpan>/</PrefixSpan>
           )}
-        </div>
+        </Prefixes>
         {preview && (
-          <div className="preview-container">
-            <div className="preview-nav">
-              <div className="left">
+          <PreviewContainer>
+            <PreviewNav>
+              <PreviewLeft>
                 <ChevronLeft
                   className="header-icon mgr-10px"
                   onClick={() => {
@@ -197,9 +259,9 @@ export default function Table({ theme }) {
                   }}
                 />
                 <div>{preview.name}</div>
-              </div>
+              </PreviewLeft>
 
-              <div className="right">
+              <PreviewRight>
                 <DownloadCloud
                   className="header-icon mgr-10px"
                   onClick={async () => await handleDownload(preview.file)}
@@ -210,12 +272,12 @@ export default function Table({ theme }) {
                     toggleModal();
                   }}
                 />
-              </div>
-            </div>
-            <div className="img-container">
+              </PreviewRight>
+            </PreviewNav>
+            <ImgContainer>
               <img src={preview.url} alt={preview.name} />
-            </div>
-          </div>
+            </ImgContainer>
+          </PreviewContainer>
         )}
         {!preview && (
           <div className="table">

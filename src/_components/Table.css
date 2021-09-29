@@ -9,22 +9,6 @@
   border-radius: 5px;
   overflow: hidden;
 }
-.prefixes {
-  margin-top: 2rem;
-  font-weight: 700;
-  font-size: 20px;
-  margin-bottom: 2rem;
-  cursor: pointer;
-}
-.prefixes span {
-  color: #82838d;
-}
-.prefixes span:last-child {
-  color: #2e2e32;
-}
-.prefixes span:hover {
-  color: #2e2e32;
-}
 .rows {
   overflow-y: scroll;
 }
@@ -133,44 +117,6 @@
 }
 .file-icon {
   color: #777984;
-}
-.preview-container {
-  width: 998px;
-  max-height: 80vh;
-  color: #77777c;
-  display: flex;
-  flex-direction: column;
-  background-color: #f5f4f7;
-  border: 1px solid #777984;
-  border-radius: 5px;
-  cursor: pointer;
-  overflow: hidden;
-}
-.preview-nav {
-  height: 40px;
-  color: #2e2e32;
-  font-weight: 700;
-  min-height: 40px;
-  display: flex;
-  padding: 0.25rem 1rem;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #eae5e5;
-  border-bottom: 1px solid #777984;
-}
-.preview-nav .left {
-  display: flex;
-  align-items: center;
-}
-.preview-nav .right {
-  display: flex;
-  align-items: center;
-}
-.img-container {
-  display: grid;
-  place-items: center;
-  height: 100%;
-  width: 100%;
 }
 img {
   object-fit: contain;
