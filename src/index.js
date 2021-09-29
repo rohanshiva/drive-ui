@@ -1,13 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import App from "./App";
+import Table from "./_components/Table";
+import { lightMode } from "./styles/_themes";
 
 import "./index.css";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+if (process.env.REACT_APP_ENV === "standalone") {
+  ReactDOM.render(
+    <React.StrictMode>
+      <Table theme={lightMode} />
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+}
+
+export default Table;

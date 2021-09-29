@@ -34,49 +34,6 @@ const PrefixSpan = styled.span`
   }
 `;
 
-const PreviewContainer = styled.div`
-  width: 998px;
-  max-height: 80vh;
-  color: ${(props) => props.theme.colors.secondary4};
-  display: flex;
-  flex-direction: column;
-  background-color: ${(props) => props.theme.colors.primaryFillColor};
-  border: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
-  border-radius: 5px;
-  cursor: pointer;
-  overflow: hidden;
-`;
-
-const PreviewNav = styled.div`
-  height: 40px;
-  color: ${(props) => props.theme.colors.dark};
-  font-weight: 700;
-  min-height: 40px;
-  display: flex;
-  padding: 0.25rem 1rem;
-  align-items: center;
-  justify-content: space-between;
-  background-color: ${(props) => props.theme.colors.tertiaryFillColor};
-  border-bottom: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
-`;
-
-const PreviewLeft = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const PreviewRight = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const ImgContainer = styled.div`
-  display: grid;
-  place-items: center;
-  height: 100%;
-  width: 100%;
-`;
-
 const TableContainer = styled.div`
   width: 998px;
   max-height: 80vh;
@@ -87,6 +44,10 @@ const TableContainer = styled.div`
   border: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
   border-radius: 5px;
   overflow: hidden;
+`;
+
+const PreviewContainer = styled(TableContainer)`
+  cursor: pointer;
 `;
 
 const TableHeader = styled.div`
@@ -102,14 +63,24 @@ const TableHeader = styled.div`
   border-bottom: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
 `;
 
+const PreviewNav = styled(TableHeader)`
+  height: 40px;
+`;
+
 const TableLeft = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const TableRight = styled.div`
-  display: flex;
-  align-items: center;
+const TableRight = styled(TableLeft)``;
+const PreviewLeft = styled(TableLeft)``;
+const PreviewRight = styled(TableLeft)``;
+
+const ImgContainer = styled.div`
+  display: grid;
+  place-items: center;
+  height: 100%;
+  width: 100%;
 `;
 
 const TableRows = styled.div`
