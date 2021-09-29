@@ -17,7 +17,7 @@ const DeleteModal = styled.div`
   ${padding("bottom", 3)}
   ${padding("left", 3)}
   ${regularTextStyle}
-  color: ${(props) => props.theme.colors.primary3};
+  color: ${(props) => props.theme.colors.secondary2};
   width: 420px;
 `;
 
@@ -68,8 +68,8 @@ export const DeleteButton = styled.button`
       }
     `
       : `
-      color: ${theme.colors.primary2};
-      border: 1px solid ${theme.colors.primary1};
+      color: ${theme.colors.secondary1};
+      border: 1px solid ${theme.colors.secondary};
       &:hover {
         cursor: not-allowed;
       }
@@ -85,15 +85,15 @@ const Button = styled.button`
   ${({ theme, disabled = false }) =>
     disabled
       ? `
-      color: ${theme.colors.firstTextColor};
-      border: 1px solid ${theme.colors.firstTextColor};
+      color: ${theme.colors.tertiary};
+      border: 1px solid ${theme.colors.tertiary};
       &:hover {
         cursor: not-allowed;
       }
     `
       : `
-      color: ${theme.colors.primary2};
-      border: 1px solid ${theme.colors.primary1};
+      color: ${theme.colors.secondary1};
+      border: 1px solid ${theme.colors.secondary};
       &:hover {
         cursor: pointer;
         border: 1px solid ${theme.colors.primary};

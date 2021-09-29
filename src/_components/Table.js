@@ -25,23 +25,23 @@ const Prefixes = styled.div`
 `;
 
 const PrefixSpan = styled.span`
-  color: #82838d;
+  color: ${(props) => props.theme.colors.secondary3};
   &:last-child {
-    color: #2e2e32;
+    color: ${(props) => props.theme.colors.dark};
   }
   &:hover {
-    color: #2e2e32;
+    color: ${(props) => props.theme.colors.dark};
   }
 `;
 
 const PreviewContainer = styled.div`
   width: 998px;
   max-height: 80vh;
-  color: #77777c;
+  color: ${(props) => props.theme.colors.secondary4};
   display: flex;
   flex-direction: column;
-  background-color: #f5f4f7;
-  border: 1px solid #777984;
+  background-color: ${(props) => props.theme.colors.primaryFillColor};
+  border: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
   border-radius: 5px;
   cursor: pointer;
   overflow: hidden;
@@ -49,15 +49,15 @@ const PreviewContainer = styled.div`
 
 const PreviewNav = styled.div`
   height: 40px;
-  color: #2e2e32;
+  color: ${(props) => props.theme.colors.dark};
   font-weight: 700;
   min-height: 40px;
   display: flex;
   padding: 0.25rem 1rem;
   align-items: center;
   justify-content: space-between;
-  background-color: #eae5e5;
-  border-bottom: 1px solid #777984;
+  background-color: ${(props) => props.theme.colors.tertiaryFillColor};
+  border-bottom: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
 `;
 
 const PreviewLeft = styled.div`
@@ -80,17 +80,17 @@ const ImgContainer = styled.div`
 const TableContainer = styled.div`
   width: 998px;
   max-height: 80vh;
-  color: #77777c;
+  color: ${(props) => props.theme.colors.secondary4};
   display: flex;
   flex-direction: column;
-  background-color: #f5f4f7;
-  border: 1px solid #777984;
+  background-color: ${(props) => props.theme.colors.primaryFillColor};
+  border: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
   border-radius: 5px;
   overflow: hidden;
 `;
 
 const TableHeader = styled.div`
-  color: #2e2e32;
+  color: ${(props) => props.theme.colors.dark};
   font-weight: 700;
   min-height: 40px;
   max-height: 40px;
@@ -98,8 +98,8 @@ const TableHeader = styled.div`
   padding: 0.25rem 1rem;
   align-items: center;
   justify-content: space-between;
-  background-color: #eae5e5;
-  border-bottom: 1px solid #777984;
+  background-color: ${(props) => props.theme.colors.tertiaryFillColor};
+  border-bottom: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
 `;
 
 const TableLeft = styled.div`
@@ -122,15 +122,17 @@ const TableRow = styled.div`
   align-items: center;
   grid-template-columns: fit-content(4rem) 2fr 1fr;
 
-  ${({ active = false }) =>
-    active ? "background-color: #e9e8ec;" : "background-color: #f5f4f7;"}
+  ${({ theme, active = false }) =>
+    active
+      ? `background-color: ${theme.colors.fillColor1};`
+      : `background-color: ${theme.colors.primaryFillColor};`}
 
   &:hover {
-    background-color: #e9e8ec;
+    background-color: ${(props) => props.theme.colors.fillColor1};
   }
 
   &:not(:last-child) {
-    border-bottom: 1px solid #777984;
+    border-bottom: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
   }
 `;
 
@@ -150,7 +152,7 @@ const Checkbox = styled.div`
 `;
 
 const FileIcon = styled.div`
-  color: #777984;
+  color: ${(props) => props.theme.colors.secondary1};
 `;
 
 const FileName = styled.div`
@@ -163,11 +165,11 @@ const FileName = styled.div`
   margin-left: 1rem;
   text-decoration: none;
 
-  ${({ disabled = false }) =>
+  ${({ theme, disabled = false }) =>
     disabled
-      ? `color: #777984;`
+      ? `color: ${theme.colors.secondary1};`
       : `
-      color: #3f83f8;
+      color: ${theme.colors.primary1};
       &:hover {
         cursor: pointer;
         text-decoration: underline;
@@ -191,13 +193,13 @@ const ActionBtn = styled.button`
 const Icon = styled.div`
   display: flex;
   margin-right: ${({ margin }) => margin};
-  ${({ disabled = false }) =>
+  ${({ theme, disabled = false }) =>
     disabled
-      ? `color: #d3d6dd;`
+      ? `color: ${theme.colors.secondary5};`
       : `
-      color: #a8aaad;
+      color: ${theme.colors.dark1};
       &:hover {
-        color: #5d5d61;
+        color: ${theme.colors.dark2};
       }`};
 `;
 
@@ -218,14 +220,14 @@ const UploadToast = styled.div`
   width: 300px;
   height: 40px;
 
-  color: #777984;
+  color: ${(props) => props.theme.colors.secondary1};
   font-weight: 700;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  background-color: #f6f1f1;
+  background-color: ${(props) => props.theme.colors.fillColor2};
   z-index: 9999;
-  border: 0.5px solid #777984;
+  border: ${(props) => `0.5px solid ${props.theme.colors.secondary1}`};
   border-radius: 3px;
   box-shadow: 0 0 0 1px rgb(16 22 26 / 20%), 0 2px 4px rgb(16 22 26 / 40%),
     0 8px 24px rgb(16 22 26 / 40%);
