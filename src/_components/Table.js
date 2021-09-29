@@ -14,6 +14,7 @@ import useList from "../hooks/useList";
 import useToggle from "../hooks/useToggle";
 import { downloadBlob } from "../utils/util";
 import DetaModal from "../_components/DetaModal";
+import EmptyDrive from "../_components/EmptyDrive";
 import { RootContainer } from "../styles/_default";
 import ConfirmDelete from "../_components/ConfirmDelete";
 
@@ -210,6 +211,12 @@ const ErrorMessage = styled.div`
   font-size: 0.875rem;
   font-weight: 600;
   color: ${(props) => props.theme.colors.deleteRed};
+`;
+
+const LoadingText = styled.div`
+  padding: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
 `;
 
 export default function Table({ drive, projectId, theme, readOnly = false }) {
@@ -456,6 +463,9 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
             </TableHeader>
             <div></div>
             <TableRows>
+              {!loading && files.api.length === 0 ? (
+                <EmptyDrive readOnly={readOnly} />
+              ) : null}
               {files.api.map((file, index) => {
                 return (
                   <TableRow
@@ -516,7 +526,7 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
                 <TableRow>
                   <TableColumn></TableColumn>
                   <TableColumn>
-                    <div>Loading...</div>
+                    <LoadingText>Loading...</LoadingText>
                   </TableColumn>
                 </TableRow>
               )}
