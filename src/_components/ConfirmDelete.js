@@ -2,11 +2,6 @@ import React from "react";
 import styled from "@emotion/styled";
 
 import { margin, padding } from "../styles/_formatting";
-import {
-  smallTextStyle,
-  regularTextStyle,
-  largeBoldTextStyle,
-} from "../styles/_typographies.js";
 
 const DeleteModal = styled.div`
   display: flex;
@@ -16,14 +11,17 @@ const DeleteModal = styled.div`
   ${padding("right", 3)}
   ${padding("bottom", 3)}
   ${padding("left", 3)}
-  ${regularTextStyle}
+  font-size: 16px;
+  line-height: 18px;
   color: ${(props) => props.theme.colors.secondary2};
   width: 420px;
 `;
 
 const DeleteModalTitle = styled.div`
   ${padding("bottom", 2)}
-  ${largeBoldTextStyle}
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 24px;
 `;
 
 const DeleteBody = styled.div`
@@ -33,13 +31,15 @@ const DeleteBody = styled.div`
 `;
 
 const DeleteModalDesc = styled.div`
-  ${regularTextStyle}
+  font-size: 16px;
+  line-height: 18px;
   ${padding("top", 1)}
   ${padding("bottom", 1)}
 `;
 
 const DeleteError = styled.span`
-  ${smallTextStyle}
+  font-size: 14px;
+  line-height: 16px;
   color: ${(props) => props.theme.colors.deleteRed};
   ${padding("top", 1)}
 `;

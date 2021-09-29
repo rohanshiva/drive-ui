@@ -3,6 +3,7 @@ import Modal from "react-modal";
 
 const modalStyles = {
   content: {
+    fontFamily: `"Karla", sans-serif`,
     top: "50%",
     left: "50%",
     right: "auto",
