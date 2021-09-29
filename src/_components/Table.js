@@ -245,7 +245,7 @@ export default function Table({ drive, projectId, theme }) {
     [loading, last, setLast]
   );
 
-  function handlePageChange(prefixes) {
+  function handlePageChange(prefixes = []) {
     setLast("");
     setPrefixes(prefixes);
   }
@@ -377,18 +377,17 @@ export default function Table({ drive, projectId, theme }) {
         onDrop={async (event) => await handleDrop(event)}
       >
         <Prefixes>
-          {prefixes.length > 0 ? (
-            prefixes.map((prefix, index) => (
-              <PrefixSpan
-                key={`${prefix}${index}`}
-                onClick={() => handlePageChange(prefixes.slice(0, index + 1))}
-              >
-                {prefix}&nbsp;/&nbsp;
-              </PrefixSpan>
-            ))
-          ) : (
-            <PrefixSpan>/</PrefixSpan>
-          )}
+          <PrefixSpan onClick={() => handlePageChange()}>
+            {drive}&nbsp;/&nbsp;
+          </PrefixSpan>
+          {prefixes.map((prefix, index) => (
+            <PrefixSpan
+              key={`${prefix}${index}`}
+              onClick={() => handlePageChange(prefixes.slice(0, index + 1))}
+            >
+              {prefix}&nbsp;/&nbsp;
+            </PrefixSpan>
+          ))}
         </Prefixes>
         {preview && (
           <PreviewContainer>
@@ -438,7 +437,7 @@ export default function Table({ drive, projectId, theme }) {
                     {prefixes[prefixes.length - 1]}
                   </>
                 ) : files.selected.length === 0 ? (
-                  "/"
+                  drive
                 ) : (
                   `${files.selected.length} item${
                     files.selected.length > 1 ? "s" : ""
