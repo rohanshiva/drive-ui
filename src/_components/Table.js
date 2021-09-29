@@ -9,11 +9,12 @@ import {
   DownloadCloud,
 } from "react-feather";
 
+import API from "../api/api";
 import useList from "../hooks/useList";
 import useToggle from "../hooks/useToggle";
 import { downloadBlob } from "../utils/util";
 import DetaModal from "../_components/DetaModal";
-import { get, put, deleteKeys } from "../api/api";
+import { RootContainer } from "../styles/_default";
 import ConfirmDelete from "../_components/ConfirmDelete";
 
 const Prefixes = styled.div`
@@ -204,7 +205,14 @@ const UploadToast = styled.div`
     0 8px 24px rgb(16 22 26 / 40%);
 `;
 
-export default function Table({ theme }) {
+const ErrorMessage = styled.div`
+  padding: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: ${(props) => props.theme.colors.deleteRed};
+`;
+
+export default function Table({ drive, projectId, theme }) {
   const [preview, setPreview] = useState(null);
   const [toastMsg, setToastMsg] = useState(null);
   const [modalOpen, toggleModal] = useToggle();
@@ -218,7 +226,8 @@ export default function Table({ theme }) {
     setFiles,
     setLast,
     setPrefixes,
-  } = useList();
+    setError,
+  } = useList(projectId, drive);
 
   const observer = useRef();
 
@@ -247,23 +256,25 @@ export default function Table({ theme }) {
 
   async function handleDownload(file) {
     try {
-      const blob = await get(file.rawName);
+      setError("");
+      const blob = await new API(projectId, drive).get(file.rawName);
       downloadBlob(blob, file.name);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      setError(err?.message || "Download: Something went wrong!");
     }
   }
 
   async function handlePreview(file) {
     try {
-      let blob = await get(file.rawName);
+      setError("");
+      let blob = await new API(projectId, drive).get(file.rawName);
       if (file.rawName.endsWith(".svg")) {
         blob = blob.slice(0, blob.size, "image/svg+xml");
       }
       const blobUrl = window.URL.createObjectURL(blob);
       setPreview({ file, name: file.name, url: blobUrl });
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      setError(err?.message || "Preview: Something went wrong!");
     }
   }
 
@@ -278,7 +289,11 @@ export default function Table({ theme }) {
     const key = file.name;
 
     try {
-      await put(`${prefixes.join("/")}/${key}`, buffer, contentType);
+      await new API(projectId, drive).put(
+        `${prefixes.join("/")}/${key}`,
+        buffer,
+        contentType
+      );
       setToastMsg(`Uploaded ${key} successfully.`);
       setTimeout(() => {
         setToastMsg(null);
@@ -326,7 +341,9 @@ export default function Table({ theme }) {
   }
 
   function handleDelete(keys) {
-    deleteKeys(keys)
+    setError("");
+    new API(projectId, drive)
+      .deleteKeys(keys)
       .then((res) => {
         const deleted = res?.deleted || [];
         setFiles({
@@ -338,7 +355,7 @@ export default function Table({ theme }) {
         toggleModal();
       })
       .catch((err) => {
-        console.error(err);
+        setError(err?.message || "Delete: Something went wrong!");
       });
   }
 
@@ -353,7 +370,7 @@ export default function Table({ theme }) {
 
   return (
     <ThemeProvider theme={theme}>
-      <div
+      <RootContainer
         onDragEnter={(event) => handleDragEnter(event)}
         onDragLeave={(event) => handleDragLeave(event)}
         onDragOver={(event) => handleDragOver(event)}
@@ -501,7 +518,7 @@ export default function Table({ theme }) {
                 </TableRow>
               )}
             </TableRows>
-            <div>{error}</div>
+            {error ? <ErrorMessage>{error}</ErrorMessage> : null}
           </TableContainer>
         )}
         {toastMsg && (
@@ -511,7 +528,7 @@ export default function Table({ theme }) {
             </UploadToast>
           </ToastContainer>
         )}
-      </div>
+      </RootContainer>
       <DetaModal isOpen={modalOpen} toggleModal={toggleModal}>
         <ConfirmDelete
           count={preview ? 1 : files.selected.length}
