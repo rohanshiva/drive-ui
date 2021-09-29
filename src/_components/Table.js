@@ -16,8 +16,6 @@ import DetaModal from "../_components/DetaModal";
 import { get, put, deleteKeys } from "../api/api";
 import ConfirmDelete from "../_components/ConfirmDelete";
 
-import "./Table.css";
-
 const Prefixes = styled.div`
   margin-top: 2rem;
   font-weight: 700;
@@ -77,6 +75,156 @@ const ImgContainer = styled.div`
   place-items: center;
   height: 100%;
   width: 100%;
+`;
+
+const TableContainer = styled.div`
+  width: 998px;
+  max-height: 80vh;
+  color: #77777c;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f4f7;
+  border: 1px solid #777984;
+  border-radius: 5px;
+  overflow: hidden;
+`;
+
+const TableHeader = styled.div`
+  color: #2e2e32;
+  font-weight: 700;
+  min-height: 40px;
+  max-height: 40px;
+  display: flex;
+  padding: 0.25rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #eae5e5;
+  border-bottom: 1px solid #777984;
+`;
+
+const TableLeft = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const TableRight = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const TableRows = styled.div`
+  overflow-y: scroll;
+`;
+
+const TableRow = styled.div`
+  padding: 0.25rem 1rem;
+  display: grid;
+  align-items: center;
+  grid-template-columns: fit-content(4rem) 2fr 1fr;
+
+  &:hover {
+    background-color: #f5f4f7;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #777984;
+  }
+`;
+
+const TableColumn = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const CheckboxIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Checkbox = styled.div`
+  margin-right: 1rem;
+`;
+
+const FileIcon = styled.div`
+  color: #777984;
+`;
+
+const FileName = styled.div`
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-left: 1rem;
+  text-decoration: none;
+
+  ${({ disabled = false }) =>
+    disabled
+      ? `color: #777984;`
+      : `
+      color: #3f83f8;
+      &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }`}
+`;
+
+const Actions = styled.div`
+  display: grid;
+  grid-template-columns: auto;
+  justify-items: end;
+  justify-content: end;
+`;
+
+const ActionBtn = styled.button`
+  background-color: transparent;
+  border: none;
+  outline: none;
+`;
+
+const Icon = styled.div`
+  display: flex;
+  margin-right: ${({ margin }) => margin};
+  ${({ disabled = false }) =>
+    disabled
+      ? `color: #d3d6dd;`
+      : `
+      color: #a8aaad;
+      &:hover {
+        color: #5d5d61;
+      }`};
+`;
+
+const Image = styled.img`
+  object-fit: contain;
+  height: 100%;
+  width: 100%;
+`;
+
+const ToastContainer = styled.div`
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const UploadToast = styled.div`
+  width: 300px;
+  height: 40px;
+
+  color: #777984;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: #f6f1f1;
+  z-index: 9999;
+  border: 0.5px solid #777984;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgb(16 22 26 / 20%), 0 2px 4px rgb(16 22 26 / 40%),
+    0 8px 24px rgb(16 22 26 / 40%);
 `;
 
 export default function Table({ theme }) {
@@ -252,43 +400,47 @@ export default function Table({ theme }) {
           <PreviewContainer>
             <PreviewNav>
               <PreviewLeft>
-                <ChevronLeft
-                  className="header-icon mgr-10px"
-                  onClick={() => {
-                    setPreview(null);
-                  }}
-                />
+                <Icon margin="10px">
+                  <ChevronLeft
+                    onClick={() => {
+                      setPreview(null);
+                    }}
+                  />
+                </Icon>
                 <div>{preview.name}</div>
               </PreviewLeft>
 
               <PreviewRight>
-                <DownloadCloud
-                  className="header-icon mgr-10px"
-                  onClick={async () => await handleDownload(preview.file)}
-                />
-                <Trash2
-                  className="header-icon"
-                  onClick={() => {
-                    toggleModal();
-                  }}
-                />
+                <Icon margin="10px">
+                  <DownloadCloud
+                    onClick={async () => await handleDownload(preview.file)}
+                  />
+                </Icon>
+                <Icon>
+                  <Trash2
+                    onClick={() => {
+                      toggleModal();
+                    }}
+                  />
+                </Icon>
               </PreviewRight>
             </PreviewNav>
             <ImgContainer>
-              <img src={preview.url} alt={preview.name} />
+              <Image src={preview.url} alt={preview.name} />
             </ImgContainer>
           </PreviewContainer>
         )}
         {!preview && (
-          <div className="table">
-            <div className="table-header">
-              <div className="left">
+          <TableContainer>
+            <TableHeader>
+              <TableLeft>
                 {prefixes.length > 0 && files.selected.length === 0 ? (
                   <>
-                    <ChevronLeft
-                      className="header-icon mgr-10px"
-                      onClick={() => handlePageChange(prefixes.slice(0, -1))}
-                    />
+                    <Icon margin="10px">
+                      <ChevronLeft
+                        onClick={() => handlePageChange(prefixes.slice(0, -1))}
+                      />
+                    </Icon>
                     {prefixes[prefixes.length - 1]}
                   </>
                 ) : files.selected.length === 0 ? (
@@ -298,44 +450,41 @@ export default function Table({ theme }) {
                     files.selected.length > 1 ? "s" : ""
                   } selected`
                 )}
-              </div>
-              <div className="right">
+              </TableLeft>
+              <TableRight>
                 {files.selected.length !== 0 ? (
-                  <Trash2
-                    className="header-icon"
-                    onClick={() => toggleModal()}
-                  />
+                  <Icon>
+                    <Trash2 onClick={() => toggleModal()} />
+                  </Icon>
                 ) : null}
-              </div>
-            </div>
+              </TableRight>
+            </TableHeader>
             <div></div>
-            <div className="rows">
+            <TableRows>
               {files.api.map((file, index) => {
                 return (
-                  <div
-                    className="table-row"
+                  <TableRow
                     ref={files.api.length === index + 1 ? lastElementRef : null}
                     key={`${file.rawName}${index}`}
                   >
-                    <div className="td">
-                      <div className="checkbox-icon">
-                        <div className="checkbox">
+                    <TableColumn>
+                      <CheckboxIconContainer>
+                        <Checkbox>
                           <input
                             type="checkbox"
                             checked={file.selected}
                             disabled={file.isFolder}
                             onChange={(e) => onChangeCheckBox(e, index)}
                           />
-                        </div>
-                        <div className="file-icon">
+                        </Checkbox>
+                        <FileIcon>
                           {file.isFolder ? <Folder /> : <File />}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="td">
+                        </FileIcon>
+                      </CheckboxIconContainer>
+                    </TableColumn>
+                    <TableColumn>
                       {file.isFolder || file.isImage ? (
-                        <div
-                          className="file-name"
+                        <FileName
                           onClick={() =>
                             file.isFolder
                               ? handleFolder(file)
@@ -343,47 +492,46 @@ export default function Table({ theme }) {
                           }
                         >
                           {file.name}
-                        </div>
+                        </FileName>
                       ) : (
-                        <div className="file-name-disabled">{file.name}</div>
+                        <FileName disabled>{file.name}</FileName>
                       )}
-                    </div>
+                    </TableColumn>
 
                     {!file.isFolder && (
-                      <div className="td">
-                        <div className="actions">
-                          <button
-                            className="action-btn"
+                      <TableColumn>
+                        <Actions>
+                          <ActionBtn
                             onClick={async () => await handleDownload(file)}
                           >
-                            <div className="action-icon">
+                            <Icon>
                               <DownloadCloud />
-                            </div>
-                          </button>
-                        </div>
-                      </div>
+                            </Icon>
+                          </ActionBtn>
+                        </Actions>
+                      </TableColumn>
                     )}
-                  </div>
+                  </TableRow>
                 );
               })}
               {loading && (
-                <div className="table-row">
-                  <div className="td"></div>
-                  <div className="td">
-                    <div className="fileName">Loading...</div>
-                  </div>
-                </div>
+                <TableRow>
+                  <TableColumn></TableColumn>
+                  <TableColumn>
+                    <div>Loading...</div>
+                  </TableColumn>
+                </TableRow>
               )}
-            </div>
+            </TableRows>
             <div>{error}</div>
-          </div>
+          </TableContainer>
         )}
         {toastMsg && (
-          <div className="toast-container">
-            <div className="upload-toast">
-              <div className="toast-msg">{toastMsg}</div>
-            </div>
-          </div>
+          <ToastContainer>
+            <UploadToast>
+              <div>{toastMsg}</div>
+            </UploadToast>
+          </ToastContainer>
         )}
       </div>
       <DetaModal isOpen={modalOpen} toggleModal={toggleModal}>

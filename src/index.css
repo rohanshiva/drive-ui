@@ -9,4 +9,24 @@ body {
   justify-content: center;
 }
 
+::-webkit-scrollbar {
+  max-width: 5px;
+  max-height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f6f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 @import url("https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700;800&display=swap");
