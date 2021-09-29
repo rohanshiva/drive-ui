@@ -122,8 +122,11 @@ const TableRow = styled.div`
   align-items: center;
   grid-template-columns: fit-content(4rem) 2fr 1fr;
 
+  ${({ active = false }) =>
+    active ? "background-color: #e9e8ec;" : "background-color: #f5f4f7;"}
+
   &:hover {
-    background-color: #f5f4f7;
+    background-color: #e9e8ec;
   }
 
   &:not(:last-child) {
@@ -466,6 +469,7 @@ export default function Table({ theme }) {
                   <TableRow
                     ref={files.api.length === index + 1 ? lastElementRef : null}
                     key={`${file.rawName}${index}`}
+                    active={file.selected}
                   >
                     <TableColumn>
                       <CheckboxIconContainer>
