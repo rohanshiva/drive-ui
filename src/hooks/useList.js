@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { list } from "../api/api";
+import API from "../api/api";
 import useToggle from "./useToggle";
 
-export default function useList() {
+export default function useList(projectId, drive) {
   const [loading, toggleLoading] = useToggle();
   const [error, setError] = useState("");
   const [files, setFiles] = useState({ selected: [], api: [] });
@@ -17,14 +17,16 @@ export default function useList() {
     if (last) {
       toggleLoading();
       setError("");
-      list(last, prefixes)
+      new API(projectId, drive)
+        .list(last, prefixes)
         .then((res) => {
           setFiles({ ...files, api: [...files.api, ...res.names] });
           setLastFile(res.last);
           toggleLoading();
         })
         .catch((err) => {
-          setError(err);
+          setError(err?.message || "List: Something went wrong!");
+          toggleLoading();
         });
     }
   }, [last]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -33,14 +35,16 @@ export default function useList() {
     setFiles({ selected: [], api: [] });
     toggleLoading();
     setError("");
-    list("", prefixes)
+    new API(projectId, drive)
+      .list("", prefixes)
       .then((res) => {
         setFiles({ selected: [], api: res.names });
         setLastFile(res.last);
         toggleLoading();
       })
       .catch((err) => {
-        setError(err);
+        setError(err?.message || "List: Something went wrong!");
+        toggleLoading();
       });
   }, [prefixes]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -53,5 +57,6 @@ export default function useList() {
     setFiles,
     setLast,
     setPrefixes,
+    setError,
   };
 }

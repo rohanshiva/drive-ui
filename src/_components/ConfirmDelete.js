@@ -2,11 +2,6 @@ import React from "react";
 import styled from "@emotion/styled";
 
 import { margin, padding } from "../styles/_formatting";
-import {
-  smallTextStyle,
-  regularTextStyle,
-  largeBoldTextStyle,
-} from "../styles/_typographies.js";
 
 const DeleteModal = styled.div`
   display: flex;
@@ -16,14 +11,17 @@ const DeleteModal = styled.div`
   ${padding("right", 3)}
   ${padding("bottom", 3)}
   ${padding("left", 3)}
-  ${regularTextStyle}
-  color: ${(props) => props.theme.colors.primary3};
+  font-size: 16px;
+  line-height: 18px;
+  color: ${(props) => props.theme.colors.secondary2};
   width: 420px;
 `;
 
 const DeleteModalTitle = styled.div`
   ${padding("bottom", 2)}
-  ${largeBoldTextStyle}
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 24px;
 `;
 
 const DeleteBody = styled.div`
@@ -33,13 +31,15 @@ const DeleteBody = styled.div`
 `;
 
 const DeleteModalDesc = styled.div`
-  ${regularTextStyle}
+  font-size: 16px;
+  line-height: 18px;
   ${padding("top", 1)}
   ${padding("bottom", 1)}
 `;
 
 const DeleteError = styled.span`
-  ${smallTextStyle}
+  font-size: 14px;
+  line-height: 16px;
   color: ${(props) => props.theme.colors.deleteRed};
   ${padding("top", 1)}
 `;
@@ -68,8 +68,8 @@ export const DeleteButton = styled.button`
       }
     `
       : `
-      color: ${theme.colors.primary2};
-      border: 1px solid ${theme.colors.primary1};
+      color: ${theme.colors.secondary1};
+      border: 1px solid ${theme.colors.secondary};
       &:hover {
         cursor: not-allowed;
       }
@@ -85,15 +85,15 @@ const Button = styled.button`
   ${({ theme, disabled = false }) =>
     disabled
       ? `
-      color: ${theme.colors.firstTextColor};
-      border: 1px solid ${theme.colors.firstTextColor};
+      color: ${theme.colors.tertiary};
+      border: 1px solid ${theme.colors.tertiary};
       &:hover {
         cursor: not-allowed;
       }
     `
       : `
-      color: ${theme.colors.primary2};
-      border: 1px solid ${theme.colors.primary1};
+      color: ${theme.colors.secondary1};
+      border: 1px solid ${theme.colors.secondary};
       &:hover {
         cursor: pointer;
         border: 1px solid ${theme.colors.primary};

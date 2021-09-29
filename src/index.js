@@ -1,13 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import App from "./App";
+import Table from "./_components/Table";
+import { lightMode } from "./styles/_themes";
 
-import "./index.css";
+if (process.env.REACT_APP_ENV === "standalone") {
+  ReactDOM.render(
+    <React.StrictMode>
+      <Table
+        drive={process.env.REACT_APP_DRIVE_NAME}
+        projectId={process.env.REACT_APP_PROJECT_KEY}
+        theme={lightMode}
+        readOnly={false}
+      />
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+}
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+export default Table;
