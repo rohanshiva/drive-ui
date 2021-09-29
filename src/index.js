@@ -11,6 +11,7 @@ if (process.env.REACT_APP_ENV === "standalone") {
         drive={process.env.REACT_APP_DRIVE_NAME}
         projectId={process.env.REACT_APP_PROJECT_KEY}
         theme={lightMode}
+        readOnly={false}
       />
     </React.StrictMode>,
     document.getElementById("root")

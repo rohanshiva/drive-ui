@@ -212,7 +212,7 @@ const ErrorMessage = styled.div`
   color: ${(props) => props.theme.colors.deleteRed};
 `;
 
-export default function Table({ drive, projectId, theme }) {
+export default function Table({ drive, projectId, theme, readOnly = false }) {
   const [preview, setPreview] = useState(null);
   const [toastMsg, setToastMsg] = useState(null);
   const [modalOpen, toggleModal] = useToggle();
@@ -371,10 +371,10 @@ export default function Table({ drive, projectId, theme }) {
   return (
     <ThemeProvider theme={theme}>
       <RootContainer
-        onDragEnter={(event) => handleDragEnter(event)}
-        onDragLeave={(event) => handleDragLeave(event)}
-        onDragOver={(event) => handleDragOver(event)}
-        onDrop={async (event) => await handleDrop(event)}
+        onDragEnter={(event) => !readOnly && handleDragEnter(event)}
+        onDragLeave={(event) => !readOnly && handleDragLeave(event)}
+        onDragOver={(event) => !readOnly && handleDragOver(event)}
+        onDrop={async (event) => !readOnly && (await handleDrop(event))}
       >
         <Prefixes>
           <PrefixSpan onClick={() => handlePageChange()}>
@@ -404,18 +404,20 @@ export default function Table({ drive, projectId, theme }) {
               </PreviewLeft>
 
               <PreviewRight>
-                <Icon margin="10px">
+                <Icon margin={!readOnly ? "10px" : "0px"}>
                   <DownloadCloud
                     onClick={async () => await handleDownload(preview.file)}
                   />
                 </Icon>
-                <Icon>
-                  <Trash2
-                    onClick={() => {
-                      toggleModal();
-                    }}
-                  />
-                </Icon>
+                {!readOnly ? (
+                  <Icon>
+                    <Trash2
+                      onClick={() => {
+                        toggleModal();
+                      }}
+                    />
+                  </Icon>
+                ) : null}
               </PreviewRight>
             </PreviewNav>
             <ImgContainer>
@@ -463,14 +465,16 @@ export default function Table({ drive, projectId, theme }) {
                   >
                     <TableColumn>
                       <CheckboxIconContainer>
-                        <Checkbox>
-                          <input
-                            type="checkbox"
-                            checked={file.selected}
-                            disabled={file.isFolder}
-                            onChange={(e) => onChangeCheckBox(e, index)}
-                          />
-                        </Checkbox>
+                        {!readOnly ? (
+                          <Checkbox>
+                            <input
+                              type="checkbox"
+                              checked={file.selected}
+                              disabled={file.isFolder}
+                              onChange={(e) => onChangeCheckBox(e, index)}
+                            />
+                          </Checkbox>
+                        ) : null}
                         <FileIcon>
                           {file.isFolder ? <Folder /> : <File />}
                         </FileIcon>
