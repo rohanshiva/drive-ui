@@ -185,6 +185,7 @@ const ActionBtn = styled.button`
   background-color: transparent;
   border: none;
   outline: none;
+  padding: 0px;
 `;
 
 const Icon = styled.div`
