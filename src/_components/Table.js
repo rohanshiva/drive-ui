@@ -13,6 +13,7 @@ import API from "../api/api";
 import useList from "../hooks/useList";
 import useToggle from "../hooks/useToggle";
 import { downloadBlob } from "../utils/util";
+import { prependOrUpdate } from "../utils/util";
 import DetaModal from "../_components/DetaModal";
 import EmptyDrive from "../_components/EmptyDrive";
 import { RootContainer } from "../styles/_default";
@@ -48,6 +49,7 @@ const TableContainer = styled.div`
   border: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
   border-radius: 5px;
   overflow: hidden;
+  position: relative;
 `;
 
 const PreviewContainer = styled(TableContainer)`
@@ -94,7 +96,6 @@ const Image = styled.img`
 
 const TableRows = styled.div`
   overflow-y: scroll;
-  position: relative;
 `;
 
 const TableRow = styled.div`
@@ -185,17 +186,25 @@ const Icon = styled.div`
       }`};
 `;
 
-const ErrorMessage = styled.div`
+const LoadingText = styled.div`
   padding: 1rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: ${(props) => props.theme.colors.deleteRed};
 `;
 
-const LoadingText = styled.div`
-  padding: 10px;
-  font-size: 0.875rem;
-  font-weight: 600;
+const ErrorMessage = styled(LoadingText)`
+  background-color: ${(props) => props.theme.colors.deleteRed};
+  color: ${(props) => props.theme.colors.white};
+`;
+
+const ProcessingMessage = styled(LoadingText)`
+  background-color: ${(props) => props.theme.colors.yellow};
+  color: ${(props) => props.theme.colors.white};
+`;
+
+const SuccessMessage = styled(LoadingText)`
+  background-color: ${(props) => props.theme.colors.green};
+  color: ${(props) => props.theme.colors.white};
 `;
 
 export default function Table({ drive, projectId, theme, readOnly = false }) {
@@ -208,11 +217,11 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
     prefixes,
     last,
     loading,
-    error,
+    message,
     setFiles,
     setLast,
     setPrefixes,
-    setError,
+    setMessage,
   } = useList(projectId, drive);
 
   const observer = useRef();
@@ -243,17 +252,20 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
 
   async function handleDownload(file) {
     try {
-      setError("");
+      setMessage(null);
       const blob = await new API(projectId, drive).get(file.rawName);
       downloadBlob(blob, file.name);
     } catch (err) {
-      setError(err?.message || "Download: Something went wrong!");
+      setMessage({
+        type: "error",
+        text: err?.message || "Download: Something went wrong!",
+      });
     }
   }
 
   async function handlePreview(file) {
     try {
-      setError("");
+      setMessage(null);
       let blob = await new API(projectId, drive).get(file.rawName);
       if (file.rawName.endsWith(".svg")) {
         blob = blob.slice(0, blob.size, "image/svg+xml");
@@ -261,7 +273,10 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
       const blobUrl = window.URL.createObjectURL(blob);
       setPreview({ file, name: file.name, url: blobUrl });
     } catch (err) {
-      setError(err?.message || "Preview: Something went wrong!");
+      setMessage({
+        type: "error",
+        text: err?.message || "Preview: Something went wrong!",
+      });
     }
   }
 
@@ -274,7 +289,10 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
     const { type: contentType, name } = file;
 
     setDnd({ over: false, count: 0 });
-
+    setMessage({
+      type: "processing",
+      text: "File uploading",
+    });
     try {
       const [file] = await new API(projectId, drive).put(
         name,
@@ -282,8 +300,17 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
         new Uint8Array(buffer),
         contentType
       );
-      setFiles({ ...files, api: [file, ...files.api] });
-    } catch (error) {}
+      setFiles({ ...files, api: prependOrUpdate(files.api, file) });
+      setMessage({
+        type: "success",
+        text: "File upload successful",
+      });
+    } catch (err) {
+      setMessage({
+        type: "error",
+        text: err?.message || "Upload: Something went wrong!",
+      });
+    }
   }
 
   function handleDragEnter(event) {
@@ -300,10 +327,9 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
   function handleDragLeave(event) {
     event.preventDefault();
     event.stopPropagation();
-    const count = dnd.count - 1;
-    setDnd({ ...dnd, count });
-    if (count === 0) {
-      setDnd({ over: false, count });
+    setDnd({ ...dnd, count: dnd.count - 1 });
+    if (dnd.count <= 1) {
+      setDnd({ over: false, count: 0 });
     }
   }
 
@@ -325,7 +351,7 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
   }
 
   function handleDelete(keys) {
-    setError("");
+    setMessage(null);
     new API(projectId, drive)
       .deleteKeys(keys)
       .then((res) => {
@@ -339,7 +365,11 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
         toggleModal();
       })
       .catch((err) => {
-        setError(err?.message || "Delete: Something went wrong!");
+        setMessage({
+          type: "error",
+          text: err?.message || "Delete: Something went wrong!",
+        });
+        toggleModal();
       });
   }
 
@@ -438,7 +468,7 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
         )}
         {!preview && (
           <TableContainer>
-            {dnd.over && <DragAndDrop />}
+            {dnd.over ? <DragAndDrop /> : null}
             <TableHeader>
               <TableLeft>
                 {prefixes.length > 0 && files.selected.length === 0 ? (
@@ -466,9 +496,19 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
                 ) : null}
               </TableRight>
             </TableHeader>
-            <div></div>
+
+            {message && message.type === "error" ? (
+              <ErrorMessage>{message.text}</ErrorMessage>
+            ) : null}
+            {message && message.type === "processing" ? (
+              <ProcessingMessage>{message.text}</ProcessingMessage>
+            ) : null}
+            {message && message.type === "success" ? (
+              <SuccessMessage>{message.text}</SuccessMessage>
+            ) : null}
+
             <TableRows>
-              {!loading && files.api.length === 0 ? (
+              {!loading && !dnd.over && files.api.length === 0 ? (
                 <EmptyDrive readOnly={readOnly} />
               ) : null}
               {files.api.map((file, index) => {
@@ -536,14 +576,12 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
                 </TableRow>
               )}
             </TableRows>
-            {error ? <ErrorMessage>{error}</ErrorMessage> : null}
           </TableContainer>
         )}
       </RootContainer>
       <DetaModal isOpen={modalOpen} toggleModal={toggleModal}>
         <ConfirmDelete
           count={preview ? 1 : files.selected.length}
-          errorMessage={error}
           onConfirm={() =>
             preview ? handlePreviewDelete() : handleSelectedDelete()
           }

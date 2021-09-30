@@ -27,5 +27,14 @@ export const lightMode = {
 
     // red
     deleteRed: "#cc6765",
+
+    // white
+    white: "#ffffff",
+
+    // yellow
+    yellow: "#d3b635",
+
+    // green
+    green: "#0d813d",
   },
 };

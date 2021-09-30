@@ -58,3 +58,16 @@ export function checkImage(key) {
   }
   return false;
 }
+
+export function prependOrUpdate(array, item) {
+  const newArray = [...array];
+  const idx = newArray.findIndex((_item) => {
+    return _item.name === item.name;
+  });
+  if (idx > -1) {
+    return Object.assign([...newArray], {
+      [idx]: { ...item },
+    });
+  }
+  return [item, ...newArray];
+}

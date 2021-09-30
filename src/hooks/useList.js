@@ -5,7 +5,7 @@ import useToggle from "./useToggle";
 
 export default function useList(projectId, drive) {
   const [loading, toggleLoading] = useToggle();
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState(null);
   const [files, setFiles] = useState({ selected: [], api: [] });
 
   const [prefixes, setPrefixes] = useState([]);
@@ -16,7 +16,7 @@ export default function useList(projectId, drive) {
   useEffect(() => {
     if (last) {
       toggleLoading();
-      setError("");
+      setMessage(null);
       new API(projectId, drive)
         .list(last, prefixes)
         .then((res) => {
@@ -25,7 +25,10 @@ export default function useList(projectId, drive) {
           toggleLoading();
         })
         .catch((err) => {
-          setError(err?.message || "List: Something went wrong!");
+          setMessage({
+            type: "error",
+            text: err?.message || "List: Something went wrong!",
+          });
           toggleLoading();
         });
     }
@@ -34,7 +37,7 @@ export default function useList(projectId, drive) {
   useEffect(() => {
     setFiles({ selected: [], api: [] });
     toggleLoading();
-    setError("");
+    setMessage(null);
     new API(projectId, drive)
       .list("", prefixes)
       .then((res) => {
@@ -43,20 +46,23 @@ export default function useList(projectId, drive) {
         toggleLoading();
       })
       .catch((err) => {
-        setError(err?.message || "List: Something went wrong!");
+        setMessage({
+          type: "error",
+          text: err?.message || "List: Something went wrong!",
+        });
         toggleLoading();
       });
   }, [prefixes]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     loading,
-    error,
+    message,
     files,
     prefixes,
     last: lastFile,
     setFiles,
     setLast,
     setPrefixes,
-    setError,
+    setMessage,
   };
 }

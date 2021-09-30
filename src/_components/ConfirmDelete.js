@@ -37,13 +37,6 @@ const DeleteModalDesc = styled.div`
   ${padding("bottom", 1)}
 `;
 
-const DeleteError = styled.span`
-  font-size: 14px;
-  line-height: 16px;
-  color: ${(props) => props.theme.colors.deleteRed};
-  ${padding("top", 1)}
-`;
-
 const DeleteModalFooter = styled.div`
   display: flex;
   flex-direction: row;
@@ -102,7 +95,7 @@ const Button = styled.button`
     `}
 `;
 
-const ConfirmDelete = ({ count = 1, errorMessage, onConfirm, onCancel }) => (
+const ConfirmDelete = ({ count = 1, onConfirm, onCancel }) => (
   <DeleteModal>
     <DeleteModalTitle>Confirm Deletion</DeleteModalTitle>
     <DeleteBody>
@@ -111,7 +104,6 @@ const ConfirmDelete = ({ count = 1, errorMessage, onConfirm, onCancel }) => (
           count > 1 ? `the ${count} selected files` : "the selected file"
         }?`}
       </DeleteModalDesc>
-      <DeleteError>{errorMessage}</DeleteError>
     </DeleteBody>
     <DeleteModalFooter>
       <DeleteButton alt="Delete" title="Delete" isConfirmed onClick={onConfirm}>
