@@ -169,6 +169,7 @@ const ActionBtn = styled.button`
 
 const Icon = styled.div`
   display: flex;
+  cursor: pointer;
   margin-right: ${({ margin }) => margin};
   ${({ theme, disabled = false }) =>
     disabled
