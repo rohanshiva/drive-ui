@@ -85,6 +85,10 @@ const ImgContainer = styled.div`
   width: 100%;
 `;
 
+const Image = styled.img`
+  object-fit: contain;
+`;
+
 const TableRows = styled.div`
   overflow-y: scroll;
 `;
@@ -174,12 +178,6 @@ const Icon = styled.div`
       &:hover {
         color: ${theme.colors.dark2};
       }`};
-`;
-
-const Image = styled.img`
-  object-fit: contain;
-  height: 100%;
-  width: 100%;
 `;
 
 const ToastContainer = styled.div`
