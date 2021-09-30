@@ -5,6 +5,7 @@ import {
   checkFolder,
   removePrefix,
   removeTrailingSlash,
+  checkTextFile,
 } from "../utils/util";
 import { getAccessToken } from "../utils/auth";
 
@@ -60,10 +61,12 @@ export default class API {
       const isFolder = checkFolder(name);
       const isImage = !isFolder && checkImage(name);
       const prefixRemoved = removePrefix(name, prefix);
+      const isTextFile = !isFolder && checkTextFile(name);
       return {
         rawName: name,
         isFolder,
         isImage,
+        isTextFile,
         name: removeTrailingSlash(prefixRemoved),
         prefix,
         selected: false,

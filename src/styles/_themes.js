@@ -16,6 +16,7 @@ export const lightMode = {
     secondary3: "#82838d",
     secondary4: "#77777c",
     secondary5: "#d3d6dd",
+    secondary6: "#F7F9FA",
 
     // blue-gray
     tertiary: "#9fabb6",
@@ -36,5 +37,6 @@ export const lightMode = {
 
     // green
     green: "#0d813d",
+
   },
 };

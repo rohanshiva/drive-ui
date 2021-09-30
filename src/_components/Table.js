@@ -27,6 +27,7 @@ const Prefixes = styled.div`
   margin-bottom: 2rem;
 `;
 
+
 const PrefixSpan = styled.span`
   color: ${(props) => props.theme.colors.secondary3};
   &:last-child {
@@ -56,6 +57,21 @@ const PreviewContainer = styled(TableContainer)`
   cursor: pointer;
 `;
 
+const TextPreviewContainer = styled.div`
+  max-height: calc(80vh - 40px);
+`;
+const TextPreview = styled.textarea`
+  outline: none;
+  border: none;
+  width: 100%;
+  resize: none;
+  padding-bottom: 2px;
+  color: ${(props) => props.theme.colors.dark};
+  background-color: ${(props) => props.theme.colors.secondary6};
+  min-height: calc(80vh - 40px);
+  max-height: calc(80vh - 40px);
+  overflow-y: scroll;
+`;
 const TableHeader = styled.div`
   color: ${(props) => props.theme.colors.dark};
   font-weight: 700;
@@ -186,6 +202,16 @@ const Icon = styled.div`
       }`};
 `;
 
+const TrashIcon = styled(Icon)`
+${({ theme, disabled = false }) =>
+disabled
+  ? `color: ${theme.colors.secondary5};`
+  : `
+  color: ${theme.colors.dark1};
+  &:hover {
+    color: ${theme.colors.deleteRed};
+  }`};
+`;
 const LoadingText = styled.div`
   padding: 1rem;
   font-size: 0.875rem;
@@ -266,13 +292,21 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
   async function handlePreview(file) {
     try {
       setMessage({ type: "processing", text: `Opening ${file.name}...` });
-      let blob = await new API(projectId, drive).get(file.rawName);
-      if (file.rawName.endsWith(".svg")) {
-        blob = blob.slice(0, blob.size, "image/svg+xml");
+      if (file.isImage) {
+        let blob = await new API(projectId, drive).get(file.rawName);
+        if (file.rawName.endsWith(".svg")) {
+          blob = blob.slice(0, blob.size, "image/svg+xml");
+        }
+        const blobUrl = window.URL.createObjectURL(blob);
+        setPreview({ file, name: file.name, url: blobUrl });
+        setMessage(null);
+      } else {
+        let blob = await new API(projectId, drive).get(file.rawName);
+        const text = await blob.text();
+        setPreview({ file, name: file.name, text: text });
+        setMessage(null);
       }
-      const blobUrl = window.URL.createObjectURL(blob);
-      setPreview({ file, name: file.name, url: blobUrl });
-      setMessage(null);
+
     } catch (err) {
       setMessage({
         type: "error",
@@ -452,19 +486,28 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
                   />
                 </Icon>
                 {!readOnly ? (
-                  <Icon>
+                  <TrashIcon>
                     <Trash2
                       onClick={() => {
                         toggleModal();
                       }}
-                    />
-                  </Icon>
+                   />
+                  </TrashIcon>
                 ) : null}
               </PreviewRight>
             </PreviewNav>
-            <ImgContainer>
+            {preview.text ? (
+              <TextPreviewContainer >
+                <TextPreview value={preview.text} readOnly>
+
+                </TextPreview>
+                </TextPreviewContainer>
+            ) : (
+              <ImgContainer>
               <Image src={preview.url} alt={preview.name} />
             </ImgContainer>
+            )}
+
           </PreviewContainer>
         )}
         {!preview && (
@@ -491,9 +534,9 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
               </TableLeft>
               <TableRight>
                 {files.selected.length !== 0 ? (
-                  <Icon>
+                  <TrashIcon>
                     <Trash2 onClick={() => toggleModal()} />
-                  </Icon>
+                  </TrashIcon>
                 ) : null}
               </TableRight>
             </TableHeader>
@@ -537,7 +580,7 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
                       </CheckboxIconContainer>
                     </TableColumn>
                     <TableColumn>
-                      {file.isFolder || file.isImage ? (
+                      {file.isFolder || file.isImage || file.isTextFile ? (
                         <FileName
                           onClick={() =>
                             file.isFolder
