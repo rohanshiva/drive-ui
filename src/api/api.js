@@ -1,4 +1,4 @@
-import { Deta } from "deta-test";
+import { Deta } from "deta";
 
 import {
   checkImage,

@@ -4009,10 +4009,10 @@ destroy@~1.0.4:
   resolved "https://registry.yarnpkg.com/destroy/-/destroy-1.0.4.tgz#978857442c44749e4206613e37946205826abd80"
   integrity sha1-l4hXRCxEdJ5CBmE+N5RiBYJqvYA=
 
-deta-test@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/deta-test/-/deta-test-1.0.7.tgz#c77e3f8f7abb419c68b7b9da14af1f80e5a384f1"
-  integrity sha512-pJsQFeVHicoit9mC0tFtpMN44F40Qsfejecjd0u+TyHU2lrbrZizdqJ4NBqFbzNgmW0B9qjI1OV9YDKO+HJVCw==
+deta@^1.1.0-i.2:
+  version "1.1.0-i.2"
+  resolved "https://registry.yarnpkg.com/deta/-/deta-1.1.0-i.2.tgz#1d70fc6a86668a0683b60c196a025a0f05fec956"
+  integrity sha512-APvAHx8MUjBec3PJJh6PfP1Hjgi+AVblxTmhmz3EARTp4Tu26Ip98wDctAhN4VxK+RJkgV5f/AtLij7TdJ8g3A==
   dependencies:
     node-fetch "^2.6.1"
 
