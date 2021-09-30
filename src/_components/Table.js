@@ -16,6 +16,7 @@ import { downloadBlob } from "../utils/util";
 import DetaModal from "../_components/DetaModal";
 import EmptyDrive from "../_components/EmptyDrive";
 import { RootContainer } from "../styles/_default";
+import DragAndDrop from "../_components/DragAndDrop";
 import ConfirmDelete from "../_components/ConfirmDelete";
 
 const Prefixes = styled.div`
@@ -39,7 +40,7 @@ const PrefixSpan = styled.span`
 
 const TableContainer = styled.div`
   width: 998px;
-  max-height: 80vh;
+  height: 80vh;
   color: ${(props) => props.theme.colors.secondary4};
   display: flex;
   flex-direction: column;
@@ -93,6 +94,7 @@ const Image = styled.img`
 
 const TableRows = styled.div`
   overflow-y: scroll;
+  position: relative;
 `;
 
 const TableRow = styled.div`
@@ -183,30 +185,6 @@ const Icon = styled.div`
       }`};
 `;
 
-const ToastContainer = styled.div`
-  margin-top: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const UploadToast = styled.div`
-  width: 300px;
-  height: 40px;
-
-  color: ${(props) => props.theme.colors.secondary1};
-  font-weight: 700;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  background-color: ${(props) => props.theme.colors.fillColor2};
-  z-index: 9999;
-  border: ${(props) => `0.5px solid ${props.theme.colors.secondary1}`};
-  border-radius: 3px;
-  box-shadow: 0 0 0 1px rgb(16 22 26 / 20%), 0 2px 4px rgb(16 22 26 / 40%),
-    0 8px 24px rgb(16 22 26 / 40%);
-`;
-
 const ErrorMessage = styled.div`
   padding: 1rem;
   font-size: 0.875rem;
@@ -222,7 +200,7 @@ const LoadingText = styled.div`
 
 export default function Table({ drive, projectId, theme, readOnly = false }) {
   const [preview, setPreview] = useState(null);
-  const [toastMsg, setToastMsg] = useState(null);
+  const [dnd, setDnd] = useState({ over: false, count: 0 });
   const [modalOpen, toggleModal] = useToggle();
 
   const {
@@ -290,10 +268,12 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
   async function handleDrop(event) {
     event.preventDefault();
     event.stopPropagation();
-    setToastMsg(null);
+
     const file = event.dataTransfer.files[0];
     const buffer = await file.arrayBuffer();
     const { type: contentType, name } = file;
+
+    setDnd({ over: false, count: 0 });
 
     try {
       const [file] = await new API(projectId, drive).put(
@@ -303,33 +283,28 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
         contentType
       );
       setFiles({ ...files, api: [file, ...files.api] });
-      setToastMsg(`Uploaded ${name} successfully.`);
-      setTimeout(() => {
-        setToastMsg(null);
-      }, 3000);
-    } catch (error) {
-      setToastMsg(`Failed to upload ${name} please try again.`);
-      setTimeout(() => {
-        setToastMsg(null);
-      }, 3000);
-    }
+    } catch (error) {}
   }
 
   function handleDragEnter(event) {
     event.preventDefault();
     event.stopPropagation();
+    setDnd({ over: true, count: dnd.count + 1 });
   }
 
   function handleDragOver(event) {
     event.preventDefault();
     event.stopPropagation();
-    setToastMsg(`Drop to upload the file.`);
   }
 
   function handleDragLeave(event) {
     event.preventDefault();
     event.stopPropagation();
-    setToastMsg(null);
+    const count = dnd.count - 1;
+    setDnd({ ...dnd, count });
+    if (count === 0) {
+      setDnd({ over: false, count });
+    }
   }
 
   function onChangeCheckBox(event, index) {
@@ -463,6 +438,7 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
         )}
         {!preview && (
           <TableContainer>
+            {dnd.over && <DragAndDrop />}
             <TableHeader>
               <TableLeft>
                 {prefixes.length > 0 && files.selected.length === 0 ? (
@@ -562,13 +538,6 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
             </TableRows>
             {error ? <ErrorMessage>{error}</ErrorMessage> : null}
           </TableContainer>
-        )}
-        {toastMsg && (
-          <ToastContainer>
-            <UploadToast>
-              <div>{toastMsg}</div>
-            </UploadToast>
-          </ToastContainer>
         )}
       </RootContainer>
       <DetaModal isOpen={modalOpen} toggleModal={toggleModal}>
