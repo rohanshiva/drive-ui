@@ -27,9 +27,9 @@ const EmptyDrive = ({ readOnly = false }) => (
   <EmptyDriveContainer>
     <Folder size={64} />
     <EmptyDriveTextContainer>
-      <EmptyDriveText>Drive/Folder is empty!</EmptyDriveText>
+      <EmptyDriveText>Folder is empty!</EmptyDriveText>
       {!readOnly ? (
-        <EmptyDriveText>Drag and drop file to upload</EmptyDriveText>
+        <EmptyDriveText>Drag and drop a file to upload</EmptyDriveText>
       ) : null}
     </EmptyDriveTextContainer>
   </EmptyDriveContainer>

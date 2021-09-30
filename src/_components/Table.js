@@ -81,12 +81,13 @@ const PreviewRight = styled(TableLeft)``;
 const ImgContainer = styled.div`
   display: grid;
   place-items: center;
-  height: 100%;
-  width: 100%;
+  max-height: calc(80vh - 40px);
 `;
 
 const Image = styled.img`
   object-fit: contain;
+  width: 100%;
+  height: 100%;
 `;
 
 const TableRows = styled.div`
@@ -418,6 +419,7 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
               ))}
             </>
           )}
+          {preview ? <PrefixSpan>{preview.name}</PrefixSpan> : null}
         </Prefixes>
         {preview && (
           <PreviewContainer>
