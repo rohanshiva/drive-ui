@@ -265,13 +265,14 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
 
   async function handlePreview(file) {
     try {
-      setMessage(null);
+      setMessage({ type: "processing", text: `Opening ${file.name}...` });
       let blob = await new API(projectId, drive).get(file.rawName);
       if (file.rawName.endsWith(".svg")) {
         blob = blob.slice(0, blob.size, "image/svg+xml");
       }
       const blobUrl = window.URL.createObjectURL(blob);
       setPreview({ file, name: file.name, url: blobUrl });
+      setMessage(null);
     } catch (err) {
       setMessage({
         type: "error",
