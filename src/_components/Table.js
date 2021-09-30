@@ -255,6 +255,7 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
   function handlePageChange(prefixes = []) {
     setLast("");
     setPrefixes(prefixes);
+    setPreview(null);
   }
 
   function handleFolder(file) {
