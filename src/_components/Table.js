@@ -23,7 +23,6 @@ const Prefixes = styled.div`
   font-weight: 700;
   font-size: 20px;
   margin-bottom: 2rem;
-  cursor: pointer;
 `;
 
 const PrefixSpan = styled.span`
@@ -34,6 +33,8 @@ const PrefixSpan = styled.span`
   &:hover {
     color: ${(props) => props.theme.colors.dark};
   }
+
+  ${({ link = true }) => (link ? "cursor: pointer" : "cursor: initial")};
 `;
 
 const TableContainer = styled.div`
@@ -386,7 +387,7 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
       >
         <Prefixes>
           <PrefixSpan onClick={() => handlePageChange()}>
-            {drive}&nbsp;/&nbsp;
+            {drive}&#160;&#160;&#160;/&#160;&#160;&#160;
           </PrefixSpan>
           {prefixes.length < 5 &&
             prefixes.map((prefix, index) => (
@@ -394,7 +395,7 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
                 key={`${prefix}${index}`}
                 onClick={() => handlePageChange(prefixes.slice(0, index + 1))}
               >
-                {prefix}&nbsp;/&nbsp;
+                {prefix}&#160;&#160;&#160;/&#160;&#160;&#160;
               </PrefixSpan>
             ))}
           {prefixes.length >= 5 && (
@@ -404,7 +405,7 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
                   handlePageChange(prefixes.slice(0, prefixes.length - 2))
                 }
               >
-                ...&nbsp;/&nbsp;
+                ...&#160;&#160;&#160;/&#160;&#160;&#160;
               </PrefixSpan>
               {prefixes.slice(prefixes.length - 2).map((prefix, index) => (
                 <PrefixSpan
@@ -415,18 +416,20 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
                     )
                   }
                 >
-                  {prefix}&nbsp;/&nbsp;
+                  {prefix}&#160;&#160;&#160;/&#160;&#160;&#160;
                 </PrefixSpan>
               ))}
             </>
           )}
-          {preview ? <PrefixSpan>{preview.name}</PrefixSpan> : null}
+          {preview ? (
+            <PrefixSpan link={false}>{preview.name}</PrefixSpan>
+          ) : null}
         </Prefixes>
         {preview && (
           <PreviewContainer>
             <PreviewNav>
               <PreviewLeft>
-                <Icon margin="10px">
+                <Icon margin="1rem">
                   <ChevronLeft
                     onClick={() => {
                       setPreview(null);
@@ -437,7 +440,7 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
               </PreviewLeft>
 
               <PreviewRight>
-                <Icon margin={!readOnly ? "10px" : "0px"}>
+                <Icon margin={!readOnly ? "1rem" : "0rem"}>
                   <DownloadCloud
                     onClick={async () => await handleDownload(preview.file)}
                   />
@@ -464,12 +467,12 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
               <TableLeft>
                 {prefixes.length > 0 && files.selected.length === 0 ? (
                   <>
-                    <Icon margin="10px">
+                    <Icon margin="1rem">
                       <ChevronLeft
                         onClick={() => handlePageChange(prefixes.slice(0, -1))}
                       />
                     </Icon>
-                    {prefixes[prefixes.length - 1]}
+                    <div>{prefixes[prefixes.length - 1]}</div>
                   </>
                 ) : files.selected.length === 0 ? (
                   drive
