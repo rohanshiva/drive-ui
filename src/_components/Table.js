@@ -292,7 +292,7 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
     setDnd({ over: false, count: 0 });
     setMessage({
       type: "processing",
-      text: "File uploading",
+      text: `Uploading ${name}...`,
     });
     try {
       const [file] = await new API(projectId, drive).put(
@@ -304,12 +304,12 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
       setFiles({ ...files, api: prependOrUpdate(files.api, file) });
       setMessage({
         type: "success",
-        text: "File upload successful",
+        text: `Uploaded ${name} successfully`,
       });
     } catch (err) {
       setMessage({
         type: "error",
-        text: err?.message || "Upload: Something went wrong!",
+        text: `Failed to upload ${name} please try again.`,
       });
     }
   }
