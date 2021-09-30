@@ -41,7 +41,7 @@ const PrefixSpan = styled.span`
 
 const TableContainer = styled.div`
   width: 998px;
-  height: 80vh;
+  max-height: 80vh;
   color: ${(props) => props.theme.colors.secondary4};
   display: flex;
   flex-direction: column;

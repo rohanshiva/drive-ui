@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { Upload } from "react-feather";
 
 const DragAndDropContainer = styled.div`
-  height: 100%;
+  height: calc(100% - 20px);
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -13,6 +13,7 @@ const DragAndDropContainer = styled.div`
   z-index: 999;
   opacity: 0.8;
   background-color: ${(props) => props.theme.colors.primaryFillColor};
+  padding: 10px;
 `;
 
 const DragAndDropTextContainer = styled.div`
@@ -24,7 +25,6 @@ const DragAndDropTextContainer = styled.div`
 `;
 
 const DragAndDropText = styled.div`
-  padding-top: 20px;
   font-weight: bold;
 `;
 
