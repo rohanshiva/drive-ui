@@ -387,14 +387,38 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
           <PrefixSpan onClick={() => handlePageChange()}>
             {drive}&nbsp;/&nbsp;
           </PrefixSpan>
-          {prefixes.map((prefix, index) => (
-            <PrefixSpan
-              key={`${prefix}${index}`}
-              onClick={() => handlePageChange(prefixes.slice(0, index + 1))}
-            >
-              {prefix}&nbsp;/&nbsp;
-            </PrefixSpan>
-          ))}
+          {prefixes.length < 5 &&
+            prefixes.map((prefix, index) => (
+              <PrefixSpan
+                key={`${prefix}${index}`}
+                onClick={() => handlePageChange(prefixes.slice(0, index + 1))}
+              >
+                {prefix}&nbsp;/&nbsp;
+              </PrefixSpan>
+            ))}
+          {prefixes.length >= 5 && (
+            <>
+              <PrefixSpan
+                onClick={() =>
+                  handlePageChange(prefixes.slice(0, prefixes.length - 2))
+                }
+              >
+                ...&nbsp;/&nbsp;
+              </PrefixSpan>
+              {prefixes.slice(prefixes.length - 2).map((prefix, index) => (
+                <PrefixSpan
+                  key={`${prefix}${index}`}
+                  onClick={() =>
+                    handlePageChange(
+                      prefixes.slice(0, prefixes.length - 2 + index + 1)
+                    )
+                  }
+                >
+                  {prefix}&nbsp;/&nbsp;
+                </PrefixSpan>
+              ))}
+            </>
+          )}
         </Prefixes>
         {preview && (
           <PreviewContainer>
