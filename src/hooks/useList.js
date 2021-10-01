@@ -52,7 +52,7 @@ export default function useList(projectId, drive) {
         });
         toggleLoading();
       });
-  }, [prefixes, drive]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [prefixes]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     loading,
