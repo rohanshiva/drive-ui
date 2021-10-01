@@ -129,7 +129,8 @@ const CheckboxIconContainer = styled.div`
   align-items: center;
 `;
 
-const Checkbox = styled.div`
+const Checkbox = styled.input`
+  margin: 0rem;
   margin-right: 1rem;
 `;
 
@@ -186,23 +187,34 @@ const Icon = styled.div`
       }`};
 `;
 
+const LeftIcon = styled(Icon)`
+  margin-right: calc(1rem - 12px);
+  margin-left: -6px;
+`;
+
 const LoadingText = styled.div`
-  padding: 1rem;
+  padding: 0.5rem 0rem;
   font-size: 0.875rem;
   font-weight: 600;
 `;
 
-const ErrorMessage = styled(LoadingText)`
+const MessageText = styled.div`
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+`;
+
+const ErrorMessage = styled(MessageText)`
   background-color: ${(props) => props.theme.colors.deleteRed};
   color: ${(props) => props.theme.colors.white};
 `;
 
-const ProcessingMessage = styled(LoadingText)`
+const ProcessingMessage = styled(MessageText)`
   background-color: ${(props) => props.theme.colors.yellow};
   color: ${(props) => props.theme.colors.white};
 `;
 
-const SuccessMessage = styled(LoadingText)`
+const SuccessMessage = styled(MessageText)`
   background-color: ${(props) => props.theme.colors.green};
   color: ${(props) => props.theme.colors.white};
 `;
@@ -435,13 +447,13 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
           <PreviewContainer>
             <PreviewNav>
               <PreviewLeft>
-                <Icon margin="1rem">
+                <LeftIcon>
                   <ChevronLeft
                     onClick={() => {
                       setPreview(null);
                     }}
                   />
-                </Icon>
+                </LeftIcon>
                 <div>{preview.name}</div>
               </PreviewLeft>
 
@@ -474,11 +486,11 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
               <TableLeft>
                 {prefixes.length > 0 && files.selected.length === 0 ? (
                   <>
-                    <Icon margin="1rem">
+                    <LeftIcon>
                       <ChevronLeft
                         onClick={() => handlePageChange(prefixes.slice(0, -1))}
                       />
-                    </Icon>
+                    </LeftIcon>
                     <div>{prefixes[prefixes.length - 1]}</div>
                   </>
                 ) : files.selected.length === 0 ? (
@@ -522,14 +534,12 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
                     <TableColumn>
                       <CheckboxIconContainer>
                         {!readOnly ? (
-                          <Checkbox>
-                            <input
-                              type="checkbox"
-                              checked={file.selected}
-                              disabled={file.isFolder}
-                              onChange={(e) => onChangeCheckBox(e, index)}
-                            />
-                          </Checkbox>
+                          <Checkbox
+                            type="checkbox"
+                            checked={file.selected}
+                            disabled={file.isFolder}
+                            onChange={(e) => onChangeCheckBox(e, index)}
+                          />
                         ) : null}
                         <FileIcon>
                           {file.isFolder ? <Folder /> : <File />}
