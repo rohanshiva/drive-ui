@@ -27,7 +27,6 @@ const Prefixes = styled.div`
   margin-bottom: 2rem;
 `;
 
-
 const PrefixSpan = styled.span`
   color: ${(props) => props.theme.colors.secondary3};
   &:last-child {
@@ -58,18 +57,21 @@ const PreviewContainer = styled(TableContainer)`
 `;
 
 const TextPreviewContainer = styled.div`
-  max-height: calc(80vh - 40px);
+  max-height: calc(100vh - 164px);
+`;
+
+const TextAreaWrapper = styled.div`
+  padding: 4px 8px;
+  height: 100%;
 `;
 const TextPreview = styled.textarea`
   outline: none;
   border: none;
   width: 100%;
+  min-height: calc(100vh - 220px);
   resize: none;
-  padding-bottom: 2px;
   color: ${(props) => props.theme.colors.dark};
   background-color: ${(props) => props.theme.colors.secondary6};
-  min-height: calc(80vh - 40px);
-  max-height: calc(80vh - 40px);
   overflow-y: scroll;
 `;
 const TableHeader = styled.div`
@@ -204,10 +206,10 @@ const Icon = styled.div`
 `;
 
 const TrashIcon = styled(Icon)`
-${({ theme, disabled = false }) =>
-disabled
-  ? `color: ${theme.colors.secondary5};`
-  : `
+  ${({ theme, disabled = false }) =>
+    disabled
+      ? `color: ${theme.colors.secondary5};`
+      : `
   color: ${theme.colors.dark1};
   &:hover {
     color: ${theme.colors.deleteRed};
@@ -319,7 +321,6 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
         setPreview({ file, name: file.name, text: text });
         setMessage(null);
       }
-
     } catch (err) {
       setMessage({
         type: "error",
@@ -506,23 +507,22 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
                       onClick={() => {
                         toggleModal();
                       }}
-                   />
+                    />
                   </TrashIcon>
                 ) : null}
               </PreviewRight>
             </PreviewNav>
             {preview.text ? (
-              <TextPreviewContainer >
-                <TextPreview value={preview.text} readOnly>
-
-                </TextPreview>
-                </TextPreviewContainer>
+              <TextPreviewContainer>
+                <TextAreaWrapper>
+                  <TextPreview value={preview.text} readOnly />
+                </TextAreaWrapper>
+              </TextPreviewContainer>
             ) : (
               <ImgContainer>
-              <Image src={preview.url} alt={preview.name} />
-            </ImgContainer>
+                <Image src={preview.url} alt={preview.name} />
+              </ImgContainer>
             )}
-
           </PreviewContainer>
         )}
         {!preview && (
