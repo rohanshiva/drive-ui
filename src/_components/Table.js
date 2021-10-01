@@ -295,15 +295,25 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
     event.preventDefault();
     event.stopPropagation();
 
-    const file = event.dataTransfer.files[0];
-    const buffer = await file.arrayBuffer();
-    const { type: contentType, name } = file;
+    try {
+      var requestedFile = event.dataTransfer.files[0];
+      var buffer = await requestedFile.arrayBuffer();
+      var { type: contentType, name } = requestedFile;
 
-    setDnd({ over: false, count: 0 });
-    setMessage({
-      type: "processing",
-      text: `Uploading ${name}...`,
-    });
+      setDnd({ over: false, count: 0 });
+      setMessage({
+        type: "processing",
+        text: `Uploading ${name}...`,
+      });
+    } catch (err) {
+      setDnd({ over: false, count: 0 });
+      setMessage({
+        type: "error",
+        text: `Failed to upload requested file please try again.`,
+      });
+      return;
+    }
+
     try {
       const [file] = await new API(projectId, drive).put(
         name,
