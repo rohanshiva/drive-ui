@@ -41,7 +41,6 @@ const PrefixSpan = styled.span`
 
 const TableContainer = styled.div`
   width: 998px;
-  max-height: 73vh;
   color: ${(props) => props.theme.colors.secondary4};
   display: flex;
   flex-direction: column;
@@ -85,7 +84,6 @@ const PreviewRight = styled(TableLeft)``;
 const ImgContainer = styled.div`
   display: grid;
   place-items: center;
-  max-height: 73vh;
 `;
 
 const Image = styled.img`
