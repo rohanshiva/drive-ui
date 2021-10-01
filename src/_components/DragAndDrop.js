@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { Upload } from "react-feather";
 
 const DragAndDropContainer = styled.div`
-  height: calc(100% - 20px);
+  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
