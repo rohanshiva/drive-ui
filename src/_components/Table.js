@@ -296,12 +296,14 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
   async function handleDrop(event) {
     event.preventDefault();
     event.stopPropagation();
+
+    setDnd({ over: false, count: 0 });
+
     try {
       const file = event.dataTransfer.files[0];
       const buffer = await file.arrayBuffer();
       const { type: contentType, name } = file;
 
-      setDnd({ over: false, count: 0 });
       setMessage({
         type: "processing",
         text: `Uploading ${name}...`,
@@ -319,7 +321,6 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
         text: `Uploaded ${name} successfully`,
       });
     } catch (err) {
-      setDnd({ over: false, count: 0 });
       setMessage({
         type: "error",
         text: `Failed to upload requested file. please try again.`,
