@@ -85,7 +85,7 @@ const PreviewRight = styled(TableLeft)``;
 const ImgContainer = styled.div`
   display: grid;
   place-items: center;
-  max-height: ${(props) => props.height};
+  max-height: ${(props) => `calc(${props.height} - 48px)`};
 `;
 
 const Image = styled.img`
