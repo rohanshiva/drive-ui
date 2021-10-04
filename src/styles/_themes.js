@@ -1,7 +1,6 @@
 export const lightMode = {
   colors: {
-    primaryFillColor: "#f5f4f7",
-    secondaryFillColor: "#fff8f8",
+    backgroundColor: "#f5f4f7",
     tertiaryFillColor: "#eae5e5",
     fillColor1: "#e3e3e8",
 
@@ -13,17 +12,13 @@ export const lightMode = {
     secondary: "#a7a8b1",
     secondary1: "#777984",
     secondary2: "#585961",
-    secondary3: "#82838d",
-    secondary4: "#77777c",
-    secondary5: "#d3d6dd",
+    secondary3: "#d3d6dd",
 
     // blue-gray
     tertiary: "#9fabb6",
 
     // dark
     dark: "#2e2e32",
-    dark1: "#a8aaad",
-    dark2: "#5d5d61",
 
     // red
     deleteRed: "#cc6765",

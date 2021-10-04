@@ -6,7 +6,7 @@ import { margin, padding } from "../styles/_formatting";
 const DeleteModal = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.secondaryFillColor};
+  background-color: ${(props) => props.theme.colors.backgroundColor};
   ${padding("top", 3)}
   ${padding("right", 3)}
   ${padding("bottom", 3)}

@@ -28,7 +28,7 @@ const Prefixes = styled.div`
 `;
 
 const PrefixSpan = styled.span`
-  color: ${(props) => props.theme.colors.secondary3};
+  color: ${(props) => props.theme.colors.secondary1};
   &:last-child {
     color: ${(props) => props.theme.colors.dark};
   }
@@ -42,10 +42,10 @@ const PrefixSpan = styled.span`
 const TableContainer = styled.div`
   width: 998px;
   max-height: ${(props) => props.height};
-  color: ${(props) => props.theme.colors.secondary4};
+  color: ${(props) => props.theme.colors.secondary1};
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.primaryFillColor};
+  background-color: ${(props) => props.theme.colors.backgroundColor};
   border: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
   border-radius: 5px;
   overflow: hidden;
@@ -107,7 +107,7 @@ const TableRow = styled.div`
   ${({ theme, active = false }) =>
     active
       ? `background-color: ${theme.colors.fillColor1};`
-      : `background-color: ${theme.colors.primaryFillColor};`}
+      : `background-color: ${theme.colors.backgroundColor};`}
 
   &:hover {
     background-color: ${(props) => props.theme.colors.fillColor1};
@@ -179,20 +179,20 @@ const Icon = styled.div`
   margin-right: ${({ margin }) => margin};
   ${({ theme, disabled = false }) =>
     disabled
-      ? `color: ${theme.colors.secondary5};`
+      ? `color: ${theme.colors.secondary3};`
       : `
-      color: ${theme.colors.dark1};
+      color: ${theme.colors.secondary1};
       &:hover {
-        color: ${theme.colors.dark2};
+        color: ${theme.colors.dark};
       }`};
 `;
 
 const TrashIcon = styled(Icon)`
   ${({ theme, disabled = false }) =>
     disabled
-      ? `color: ${theme.colors.secondary5};`
+      ? `color: ${theme.colors.secondary3};`
       : `
-  color: ${theme.colors.dark1};
+  color: ${theme.colors.secondary1};
   &:hover {
     color: ${theme.colors.deleteRed};
   }`};
