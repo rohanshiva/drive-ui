@@ -99,7 +99,7 @@ const TableRows = styled.div`
 `;
 
 const TableRow = styled.div`
-  padding: 0.25rem 1rem;
+  padding: 0.3rem 1rem;
   display: grid;
   align-items: center;
   grid-template-columns: fit-content(4rem) 2fr 1fr;
@@ -135,6 +135,8 @@ const Checkbox = styled.input`
 `;
 
 const FileIcon = styled.div`
+  display: flex;
+  align-items: center;
   color: ${(props) => props.theme.colors.secondary1};
 `;
 

@@ -2,7 +2,7 @@ export const lightMode = {
   colors: {
     backgroundColor: "#f5f4f7",
     tertiaryFillColor: "#eae5e5",
-    fillColor1: "#e3e3e8",
+    fillColor1: "#ddd9d9",
 
     // blue
     primary: "#4d5df0",
