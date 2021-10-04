@@ -41,7 +41,7 @@ const PrefixSpan = styled.span`
 
 const TableContainer = styled.div`
   width: 998px;
-  max-height: calc(100vh - 164px);
+  max-height: ${(props) => props.height};
   color: ${(props) => props.theme.colors.secondary4};
   display: flex;
   flex-direction: column;
@@ -85,7 +85,7 @@ const PreviewRight = styled(TableLeft)``;
 const ImgContainer = styled.div`
   display: grid;
   place-items: center;
-  max-height: calc(100vh - 164px);
+  max-height: ${(props) => props.height};
 `;
 
 const Image = styled.img`
@@ -219,7 +219,13 @@ const SuccessMessage = styled(MessageText)`
   color: ${(props) => props.theme.colors.white};
 `;
 
-export default function Table({ drive, projectId, theme, readOnly = false }) {
+export default function Table({
+  drive,
+  projectId,
+  theme,
+  readOnly = false,
+  height = "calc(100vh - 164px)",
+}) {
   const [preview, setPreview] = useState(null);
   const [dnd, setDnd] = useState({ over: false, count: 0 });
   const [modalOpen, toggleModal] = useToggle();
@@ -476,13 +482,13 @@ export default function Table({ drive, projectId, theme, readOnly = false }) {
                 ) : null}
               </PreviewRight>
             </PreviewNav>
-            <ImgContainer>
+            <ImgContainer height={height}>
               <Image src={preview.url} alt={preview.name} />
             </ImgContainer>
           </PreviewContainer>
         )}
         {!preview && (
-          <TableContainer>
+          <TableContainer height={height}>
             {dnd.over ? <DragAndDrop /> : null}
             <TableHeader>
               <TableLeft>
