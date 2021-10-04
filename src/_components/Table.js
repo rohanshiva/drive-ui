@@ -187,6 +187,17 @@ const Icon = styled.div`
       }`};
 `;
 
+const TrashIcon = styled(Icon)`
+  ${({ theme, disabled = false }) =>
+    disabled
+      ? `color: ${theme.colors.secondary5};`
+      : `
+  color: ${theme.colors.dark1};
+  &:hover {
+    color: ${theme.colors.deleteRed};
+  }`};
+`;
+
 const LeftIcon = styled(Icon)`
   margin-right: calc(1rem - 12px);
   margin-left: -6px;
@@ -472,13 +483,13 @@ export default function Table({
                   />
                 </Icon>
                 {!readOnly ? (
-                  <Icon>
+                  <TrashIcon>
                     <Trash2
                       onClick={() => {
                         toggleModal();
                       }}
                     />
-                  </Icon>
+                  </TrashIcon>
                 ) : null}
               </PreviewRight>
             </PreviewNav>
@@ -511,9 +522,9 @@ export default function Table({
               </TableLeft>
               <TableRight>
                 {files.selected.length !== 0 ? (
-                  <Icon>
+                  <TrashIcon>
                     <Trash2 onClick={() => toggleModal()} />
-                  </Icon>
+                  </TrashIcon>
                 ) : null}
               </TableRight>
             </TableHeader>
