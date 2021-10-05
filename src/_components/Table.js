@@ -5,6 +5,9 @@ import {
   File,
   Trash2,
   Folder,
+  Loader,
+  CheckCircle,
+  AlertCircle,
   ChevronLeft,
   DownloadCloud,
 } from "react-feather";
@@ -178,7 +181,8 @@ const ActionBtn = styled.button`
 const Icon = styled.div`
   display: flex;
   cursor: pointer;
-  margin-right: ${({ margin }) => margin};
+  margin-right: ${({ marginRight }) => marginRight};
+  margin-left: ${({ marginLeft }) => marginLeft};
   ${({ theme, disabled = false }) =>
     disabled
       ? `color: ${theme.colors.secondary3};`
@@ -211,26 +215,64 @@ const LoadingText = styled.div`
   font-weight: 600;
 `;
 
+const MessageDiv = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const MessageText = styled.div`
-  padding: 0.5rem 1rem;
   font-size: 0.875rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
 `;
 
 const ErrorMessage = styled(MessageText)`
-  background-color: ${(props) => props.theme.colors.deleteRed};
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.deleteRed};
 `;
 
 const ProcessingMessage = styled(MessageText)`
-  background-color: ${(props) => props.theme.colors.yellow};
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.yellow};
 `;
 
 const SuccessMessage = styled(MessageText)`
-  background-color: ${(props) => props.theme.colors.green};
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.green};
 `;
+
+function Message({ message, theme }) {
+  return (
+    <MessageDiv>
+      {message && message.type === "error" ? (
+        <ErrorMessage>
+          <Icon>
+            <AlertCircle size={16} color={theme.colors.deleteRed} />
+          </Icon>
+          <div>&#160;&#160;{message.text}</div>
+        </ErrorMessage>
+      ) : null}
+      {message && message.type === "processing" ? (
+        <ProcessingMessage>
+          <Icon>
+            <Loader
+              style={{ animation: "spin 4s linear infinite" }}
+              size={16}
+              color={theme.colors.yellow}
+            />
+          </Icon>
+          <div>&#160;&#160;{message.text}</div>
+        </ProcessingMessage>
+      ) : null}
+      {message && message.type === "success" ? (
+        <SuccessMessage>
+          <Icon>
+            <CheckCircle size={16} color={theme.colors.green} />
+          </Icon>
+          <div>&#160;&#160;{message.text}</div>
+        </SuccessMessage>
+      ) : null}
+    </MessageDiv>
+  );
+}
 
 export default function Table({
   drive,
@@ -472,6 +514,7 @@ export default function Table({
                   <ChevronLeft
                     onClick={() => {
                       setPreview(null);
+                      setMessage(null);
                     }}
                   />
                 </LeftIcon>
@@ -479,7 +522,11 @@ export default function Table({
               </PreviewLeft>
 
               <PreviewRight>
-                <Icon margin={!readOnly ? "1rem" : "0rem"}>
+                <Message message={message} theme={theme} />
+                <Icon
+                  marginLeft={message ? "1rem" : "0rem"}
+                  marginRight={!readOnly ? "1rem" : "0rem"}
+                >
                   <DownloadCloud
                     onClick={async () => await handleDownload(preview.file)}
                   />
@@ -523,23 +570,14 @@ export default function Table({
                 )}
               </TableLeft>
               <TableRight>
+                <Message message={message} theme={theme} />
                 {files.selected.length !== 0 ? (
-                  <TrashIcon>
+                  <TrashIcon marginLeft={message ? "1rem" : "0rem"}>
                     <Trash2 onClick={() => toggleModal()} />
                   </TrashIcon>
                 ) : null}
               </TableRight>
             </TableHeader>
-
-            {message && message.type === "error" ? (
-              <ErrorMessage>{message.text}</ErrorMessage>
-            ) : null}
-            {message && message.type === "processing" ? (
-              <ProcessingMessage>{message.text}</ProcessingMessage>
-            ) : null}
-            {message && message.type === "success" ? (
-              <SuccessMessage>{message.text}</SuccessMessage>
-            ) : null}
 
             <TableRows>
               {!loading && !dnd.over && files.api.length === 0 ? (
