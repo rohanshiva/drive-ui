@@ -1,10 +1,10 @@
 export const lightMode = {
   colors: {
-    backgroundColor: "#f6f1f1",
+    backgroundColor: "#eae5e5",
 
     // blue
     primary: "#4d5df0",
-    primary1: "#5683ed",
+    primary1: "#3f83f8",
 
     // gray
     secondary: "#a7a8b1",
@@ -14,7 +14,7 @@ export const lightMode = {
 
     // blue-gray
     tertiary: "#9fabb6",
-    tertiary3: "#dbe0eb",
+    tertiary3: "#ddd9d9",
 
     // dark
     dark: "#2e2e32",
