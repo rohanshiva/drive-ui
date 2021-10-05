@@ -45,7 +45,7 @@ const TableContainer = styled.div`
   color: ${(props) => props.theme.colors.secondary1};
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.backgroundColor};
+  background-color: ${(props) => props.theme.colors.white};
   border: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
   border-radius: 5px;
   overflow: hidden;
@@ -65,7 +65,7 @@ const TableHeader = styled.div`
   padding: 0.25rem 1rem;
   align-items: center;
   justify-content: space-between;
-  background-color: ${(props) => props.theme.colors.tertiaryFillColor};
+  background-color: ${(props) => props.theme.colors.backgroundColor};
   border-bottom: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
 `;
 
@@ -106,11 +106,11 @@ const TableRow = styled.div`
 
   ${({ theme, active = false }) =>
     active
-      ? `background-color: ${theme.colors.fillColor1};`
-      : `background-color: ${theme.colors.backgroundColor};`}
+      ? `background-color: ${theme.colors.secondaryBackgroundColor};`
+      : `background-color: ${theme.colors.white};`}
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.fillColor1};
+    background-color: ${(props) => props.theme.colors.secondaryBackgroundColor};
   }
 
   &:not(:last-child) {
