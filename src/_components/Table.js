@@ -106,11 +106,11 @@ const TableRow = styled.div`
 
   ${({ theme, active = false }) =>
     active
-      ? `background-color: ${theme.colors.secondaryBackgroundColor};`
+      ? `background-color: ${theme.colors.tertiary3};`
       : `background-color: ${theme.colors.white};`}
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.secondaryBackgroundColor};
+    background-color: ${(props) => props.theme.colors.tertiary3};
   }
 
   &:not(:last-child) {
