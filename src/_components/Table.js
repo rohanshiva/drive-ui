@@ -5,6 +5,9 @@ import {
   File,
   Trash2,
   Folder,
+  Loader,
+  CheckCircle,
+  AlertCircle,
   ChevronLeft,
   DownloadCloud,
 } from "react-feather";
@@ -215,21 +218,18 @@ const MessageText = styled.div`
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  border-bottom: ${(props) => `1px solid ${props.theme.colors.secondary1}`};
 `;
 
-const ErrorMessage = styled(MessageText)`
-  background-color: ${(props) => props.theme.colors.deleteRed};
-  color: ${(props) => props.theme.colors.white};
-`;
+const ErrorMessage = styled(MessageText)``;
+const ProcessingMessage = styled(MessageText)``;
+const SuccessMessage = styled(MessageText)``;
 
-const ProcessingMessage = styled(MessageText)`
-  background-color: ${(props) => props.theme.colors.yellow};
-  color: ${(props) => props.theme.colors.white};
-`;
-
-const SuccessMessage = styled(MessageText)`
-  background-color: ${(props) => props.theme.colors.green};
-  color: ${(props) => props.theme.colors.white};
+const LoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 export default function Table({
@@ -532,13 +532,35 @@ export default function Table({
             </TableHeader>
 
             {message && message.type === "error" ? (
-              <ErrorMessage>{message.text}</ErrorMessage>
+              <ErrorMessage>
+                <Icon>
+                  <AlertCircle size={14} color={theme.colors.deleteRed} />
+                </Icon>
+                <div>&#160;&#160;&#160;&#160;&#160;{message.text}</div>
+              </ErrorMessage>
             ) : null}
             {message && message.type === "processing" ? (
-              <ProcessingMessage>{message.text}</ProcessingMessage>
+              <ProcessingMessage>
+                <Icon>
+                  <Loader
+                    style={{ animation: "spin 4s linear infinite" }}
+                    size={14}
+                    color={theme.colors.yellow}
+                  />
+                </Icon>
+                <div>&#160;&#160;&#160;&#160;&#160;{message.text}</div>
+              </ProcessingMessage>
             ) : null}
             {message && message.type === "success" ? (
-              <SuccessMessage>{message.text}</SuccessMessage>
+              <SuccessMessage>
+                <Icon>
+                  <CheckCircle size={14} color={theme.colors.green} />
+                </Icon>
+                <div>
+                  &#160;&#160;&#160;&#160;&#160;
+                  {message.text}
+                </div>
+              </SuccessMessage>
             ) : null}
 
             <TableRows>
@@ -603,7 +625,18 @@ export default function Table({
                 <TableRow>
                   <TableColumn></TableColumn>
                   <TableColumn>
-                    <LoadingText>Loading...</LoadingText>
+                    <LoadingContainer>
+                      <Icon>
+                        <Loader
+                          style={{ animation: "spin 4s linear infinite" }}
+                          size={14}
+                          color={theme.colors.yellow}
+                        />
+                      </Icon>
+                      <LoadingText>
+                        &#160;&#160;&#160;&#160;&#160;Loading...
+                      </LoadingText>
+                    </LoadingContainer>
                   </TableColumn>
                 </TableRow>
               )}
