@@ -89,6 +89,7 @@ const ImgContainer = styled.div`
   display: grid;
   place-items: center;
   max-height: ${(props) => `calc(${props.height} - 48px)`};
+  overflow: scroll;
 `;
 
 const Image = styled.img`
