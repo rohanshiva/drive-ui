@@ -1,6 +1,7 @@
 export const lightMode = {
   colors: {
     backgroundColor: "#eae5e5",
+    secondaryBackgroundColor: "#f6f1f1",
 
     // blue
     primary: "#4d5df0",
@@ -23,7 +24,7 @@ export const lightMode = {
     deleteRed: "#cc6765",
 
     // white
-    white: "#ffffff",
+    white: "#f5f4f7",
 
     // yellow
     yellow: "#d3b635",

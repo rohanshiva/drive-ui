@@ -12,7 +12,7 @@ const DragAndDropContainer = styled.div`
   position: absolute;
   z-index: 999;
   opacity: 0.8;
-  background-color: ${(props) => props.theme.colors.backgroundColor};
+  background-color: ${(props) => props.theme.colors.secondaryBackgroundColor};
   padding: 10px;
 `;
 
