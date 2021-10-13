@@ -86,7 +86,7 @@ const supportedLanguages = {
   ".git": "git",
   ".json": "json",
   ".less": "less",
-  ".ocaml": "ocaml",
+  ".ml": "ocaml",
   ".reason": "reason",
   ".sass": "sass",
   ".scss": "scss",
@@ -94,7 +94,8 @@ const supportedLanguages = {
   ".ts": "typescript",
   ".wasm": "wasm",
   ".yaml": "yaml",
-  ".txt": ".txt",
+  ".txt": "plain",
+  ".java": "java"
   // go: [".go"],
   // python: [".py"],
   // javascript: [".js"],
