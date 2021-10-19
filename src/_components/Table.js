@@ -512,7 +512,6 @@ export default function Table({
                 options={{
                   language: preview.language,
                   readOnly: true,
-                  lineNumber: true,
                 }}
               />
             ) : (
