@@ -71,3 +71,59 @@ export function prependOrUpdate(array, item) {
   }
   return [item, ...newArray];
 }
+
+const supportedLanguages = {
+  ".go": "go",
+  ".py": "python",
+  ".js": "javascript",
+  ".c": "c",
+  ".cc": "cpp",
+  ".cpp": "cpp",
+  ".sh": "bash",
+  ".md": "markdown",
+  ".css": "css",
+  ".jsx": "jsx",
+  ".git": "git",
+  ".json": "json",
+  ".less": "less",
+  ".ml": "ocaml",
+  ".reason": "reason",
+  ".sass": "sass",
+  ".scss": "scss",
+  ".sql": "sql",
+  ".ts": "typescript",
+  ".wasm": "wasm",
+  ".yaml": "yaml",
+  ".txt": "plain",
+  ".java": "java"
+  // go: [".go"],
+  // python: [".py"],
+  // javascript: [".js"],
+  // c: [".c"],
+  // cpp: [".cc", ".cpp"],
+  // bash: [".sh"],
+  // markdown: [".md"],
+  // css: [".css"],
+  // jsx: [".jsx"],
+  // git: [".git"],
+  // json: [".json"],
+  // less: [".less"],
+  // ocaml: [".ocaml"],
+  // reason: [".reason"],
+  // sass: [".sass"],
+  // scss: [".scss"],
+  // sql: [".sql"],
+  // typescript: [".ts"],
+  // wasm: [".wasm"],
+  // yaml: [".yaml"],
+  // textfile: [".txt"]
+}
+
+export function checkTextFile(key) {
+  for (const type in supportedLanguages) {
+    if (key.endsWith(type)) {
+      return supportedLanguages[type];
+    }
+  }
+  return false;
+}

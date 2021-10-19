@@ -22,6 +22,7 @@ import EmptyDrive from "../_components/EmptyDrive";
 import { RootContainer } from "../styles/_default";
 import DragAndDrop from "../_components/DragAndDrop";
 import ConfirmDelete from "../_components/ConfirmDelete";
+import Editor from "../_components/Editor";
 
 const Prefixes = styled.div`
   margin-top: 2rem;
@@ -298,13 +299,20 @@ export default function Table({
   async function handlePreview(file) {
     try {
       setMessage({ type: "processing", text: `Opening ${file.name}...` });
-      let blob = await new API(projectId, drive).get(file.rawName);
-      if (file.rawName.endsWith(".svg")) {
-        blob = blob.slice(0, blob.size, "image/svg+xml");
+      if (file.isImage) {
+        let blob = await new API(projectId, drive).get(file.rawName);
+        if (file.rawName.endsWith(".svg")) {
+          blob = blob.slice(0, blob.size, "image/svg+xml");
+        }
+        const blobUrl = window.URL.createObjectURL(blob);
+        setPreview({ file, name: file.name, url: blobUrl });
+        setMessage(null);
+      } else {
+        let blob = await new API(projectId, drive).get(file.rawName);
+        const content = await blob.text();
+        setPreview({ file, name: file.name, content, language: file.language });
+        setMessage(null);
       }
-      const blobUrl = window.URL.createObjectURL(blob);
-      setPreview({ file, name: file.name, url: blobUrl });
-      setMessage(null);
     } catch (err) {
       setMessage({
         type: "error",
@@ -496,9 +504,21 @@ export default function Table({
                 ) : null}
               </PreviewRight>
             </PreviewNav>
-            <ImgContainer height={height}>
-              <Image src={preview.url} alt={preview.name} />
-            </ImgContainer>
+            {preview.language ? (
+              <Editor
+                code={preview.content}
+                width={"990px"}
+                height={height}
+                options={{
+                  language: preview.language,
+                  readOnly: true,
+                }}
+              />
+            ) : (
+              <ImgContainer height={height}>
+                <Image src={preview.url} alt={preview.name} />
+              </ImgContainer>
+            )}
           </PreviewContainer>
         )}
         {!preview && (
@@ -591,7 +611,7 @@ export default function Table({
                       </CheckboxIconContainer>
                     </TableColumn>
                     <TableColumn>
-                      {file.isFolder || file.isImage ? (
+                      {file.isFolder || file.isImage || file.language ? (
                         <FileName
                           onClick={() =>
                             file.isFolder
